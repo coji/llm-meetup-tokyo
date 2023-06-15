@@ -39,13 +39,17 @@ const discordStrategy = new DiscordStrategy(
       create: {
         id: profile.id,
         displayName: profile.__json.username,
-        photoUrl: profile.__json.avatar,
+        photoUrl: profile.__json.avatar
+          ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.__json.avatar}`
+          : undefined,
         discriminator: profile.__json.discriminator,
         email: profile.__json.email,
       },
       update: {
         displayName: profile.__json.username,
-        photoUrl: profile.__json.avatar,
+        photoUrl: profile.__json.avatar
+          ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.__json.avatar}`
+          : undefined,
         discriminator: profile.__json.discriminator,
         email: profile.__json.email,
       },
@@ -57,6 +61,7 @@ const discordStrategy = new DiscordStrategy(
         email: true,
       },
     })
+
     return {
       ...user,
       email: user.email ?? undefined,
