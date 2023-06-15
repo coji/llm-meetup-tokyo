@@ -83,9 +83,9 @@ dependencies:
   remix-auth:
     specifier: 3.4.0
     version: 3.4.0(@remix-run/react@1.17.0)(@remix-run/server-runtime@1.17.0)
-  remix-auth-google:
-    specifier: 1.2.0
-    version: 1.2.0(@remix-run/server-runtime@1.17.0)(remix-auth@3.4.0)
+  remix-auth-discord:
+    specifier: 1.2.1
+    version: 1.2.1(@remix-run/react@1.17.0)(@remix-run/server-runtime@1.17.0)
   remix-auth-oauth2:
     specifier: 1.7.0
     version: 1.7.0(@remix-run/server-runtime@1.17.0)(remix-auth@3.4.0)
@@ -9510,16 +9510,16 @@ packages:
       unified: 10.1.2
     dev: true
 
-  /remix-auth-google@1.2.0(@remix-run/server-runtime@1.17.0)(remix-auth@3.4.0):
-    resolution: {integrity: sha512-llyrtOt8vk503XlAoEdGuEmrHRACFOP13yPVn92VkrcogTUyALzuy8ky2O1/FSJ7Q2+B0di5yMiCF4IYD/Yn4g==}
+  /remix-auth-discord@1.2.1(@remix-run/react@1.17.0)(@remix-run/server-runtime@1.17.0):
+    resolution: {integrity: sha512-tA3lhN4PEarCfLF5XIWHrVxC3RaDCwt2wp2IcOlriIYSPEl2pTmhgZrsGIS4inEz7n8matnVm+kHr+L/diRJFw==}
     peerDependencies:
-      '@remix-run/server-runtime': ^1.1.1
-      remix-auth: ^3.2.1
+      '@remix-run/server-runtime': ^1.0.0
     dependencies:
       '@remix-run/server-runtime': 1.17.0
       remix-auth: 3.4.0(@remix-run/react@1.17.0)(@remix-run/server-runtime@1.17.0)
       remix-auth-oauth2: 1.7.0(@remix-run/server-runtime@1.17.0)(remix-auth@3.4.0)
     transitivePeerDependencies:
+      - '@remix-run/react'
       - supports-color
     dev: false
 

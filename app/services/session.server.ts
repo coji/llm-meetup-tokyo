@@ -1,19 +1,20 @@
-import { type User } from '@prisma/client'
 import { createCookieSessionStorage } from '@remix-run/node'
+import type { DiscordProfile } from 'remix-auth-discord'
 import invariant from 'tiny-invariant'
 invariant(
   process.env.SESSION_SECRET,
   'SESSION_SECRET environment variable should defined',
 )
 
-export interface SessionUser {
-  id: User['id']
-  email: User['email']
-  displayName: User['displayName']
-  photoUrl?: NonNullable<User['photoUrl']>
+export interface DiscordUser {
+  id: DiscordProfile['id']
+  displayName: DiscordProfile['displayName']
+  photoUrl?: NonNullable<DiscordProfile['__json']['avatar']>
+  discriminator: DiscordProfile['__json']['discriminator']
+  email?: NonNullable<DiscordProfile['__json']['email']>
 }
 
-export const sessionStorage = createCookieSessionStorage<SessionUser>({
+export const sessionStorage = createCookieSessionStorage<DiscordUser>({
   cookie: {
     name: '__session',
     httpOnly: true,

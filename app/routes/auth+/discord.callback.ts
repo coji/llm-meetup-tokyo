@@ -4,7 +4,7 @@ import { buildForwardedRequest } from '~/utils/forwarded-request.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
   return await authenticator.authenticate(
-    'google',
+    'discord',
     buildForwardedRequest(request),
     {
       successRedirect: '/',

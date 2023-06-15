@@ -1,46 +1,70 @@
 import { Authenticator } from 'remix-auth'
-import { GoogleStrategy } from 'remix-auth-google'
+import { DiscordStrategy, type PartialDiscordGuild } from 'remix-auth-discord'
 import invariant from 'tiny-invariant'
-import { sessionStorage, type SessionUser } from '~/services/session.server'
+import { sessionStorage, type DiscordUser } from '~/services/session.server'
 import { prisma } from './database.server'
 
-invariant(process.env.GOOGLE_CLIENT_ID, 'GOOGLE_CLIENT_ID should be defined.')
+invariant(process.env.DISCORD_CLIENT_ID, 'DISCORD_CLIENT_ID should be defined.')
 invariant(
-  process.env.GOOGLE_CLIENT_SECRET,
-  'GOOGLE_CLIENT_SECRET should be defined.',
+  process.env.DISCORD_CLIENT_SECRET,
+  'DISCORD_CLIENT_SECRET should be defined.',
 )
+invariant(process.env.DISCORD_GUILD_ID, 'DISCORD_GUILD_ID should be defined.')
 
-const authenticator = new Authenticator<SessionUser>(sessionStorage)
-const googleStrategy = new GoogleStrategy(
+const discordStrategy = new DiscordStrategy(
   {
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/callback/google',
+    clientID: process.env.DISCORD_CLIENT_ID,
+    clientSecret: process.env.DISCORD_CLIENT_SECRET,
+    callbackURL: '/auth/discord/callback',
+    scope: ['identify', 'email', 'guilds'],
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
+    const userGuilds = (await (
+      await fetch('https://discord.com/api/v10/users/@me/guilds', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+    )?.json()) as Array<PartialDiscordGuild>
+
+    const isGuildMember = userGuilds.some(
+      (guild) => guild.id === process.env.DISCORD_GUILD_ID,
+    )
+    if (!isGuildMember) {
+      throw new Error('You must be a member of the guild to sign in.')
+    }
+
     const user = await prisma.user.upsert({
       where: {
-        email: profile.emails[0].value,
+        id: profile.id,
       },
       create: {
-        email: profile.emails[0].value,
-        displayName: profile.displayName,
-        photoUrl: profile.photos[0].value,
+        id: profile.id,
+        displayName: profile.__json.username,
+        photoUrl: profile.__json.avatar,
+        discriminator: profile.__json.discriminator,
+        email: profile.__json.email,
       },
       update: {
-        displayName: profile.displayName,
-        photoUrl: profile.photos[0].value,
+        displayName: profile.__json.username,
+        photoUrl: profile.__json.avatar,
+        discriminator: profile.__json.discriminator,
+        email: profile.__json.email,
       },
       select: {
         id: true,
-        email: true,
         displayName: true,
         photoUrl: true,
+        discriminator: true,
+        email: true,
       },
     })
-    return { ...user, photoUrl: user.photoUrl ?? undefined }
+    return {
+      ...user,
+      email: user.email ?? undefined,
+      photoUrl: user.photoUrl ?? undefined,
+    }
   },
 )
 
-authenticator.use(googleStrategy)
+const authenticator = new Authenticator<DiscordUser>(sessionStorage)
+authenticator.use(discordStrategy)
 export { authenticator }

@@ -29,13 +29,13 @@ export const AppLoginPane = (props: StackProps) => {
       >
         <Button
           as={Link}
-          to="/auth/google"
+          to="/auth/discord"
           size="sm"
           type="submit"
           variant="outline"
           isLoading={
             navigation.state !== 'idle' &&
-            navigation.location.pathname === '/auth/google'
+            navigation.location.pathname === '/auth/discord'
           }
         >
           Sign in
