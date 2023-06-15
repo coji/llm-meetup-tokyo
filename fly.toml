@@ -1,0 +1,32 @@
+
+app = "llm-meetup-tokyo"
+kill_signal = "SIGINT"
+kill_timeout = 5
+primary_region = "nrt"
+processes = []
+
+[env]
+  PORT = "8080"
+
+[deploy]
+release_command = "pnpm dlx prisma migrate deploy"
+
+[mounts]
+  source = "data"
+  destination = "/app/data"
+
+[experimental]
+  auto_rollback = true
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 250
+
