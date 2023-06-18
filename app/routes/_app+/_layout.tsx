@@ -1,10 +1,9 @@
-import { Box, Center, Container } from '@chakra-ui/react'
+import { Center, Container } from '@chakra-ui/react'
+import { Outlet } from '@remix-run/react'
 import { AppFooter, AppHeader } from '~/components'
-import { useSessionUser } from '~/hooks/use-session-user'
 
-export default function IndexPage() {
-  const user = useSessionUser()
-
+export default function AppLayout() {
+  console.log('app layout')
   return (
     <>
       <Container
@@ -14,7 +13,9 @@ export default function IndexPage() {
         minH="100dvh"
       >
         <AppHeader />
-        <Center>{user && <Box>Welcome, {user.displayName}!</Box>}</Center>
+        <Center>
+          <Outlet />
+        </Center>
         <AppFooter />
       </Container>
     </>
