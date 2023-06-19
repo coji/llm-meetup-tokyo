@@ -1,12 +1,13 @@
 import type { FlexProps } from '@chakra-ui/react'
 import { Flex, Heading, Spacer } from '@chakra-ui/react'
+import { Link } from '@remix-run/react'
 import { AppLoginPane } from './AppLoginPane'
 
 type AppHeaderProps = FlexProps
 export const AppHeader = ({ ...rest }: AppHeaderProps) => {
   return (
     <Flex {...rest}>
-      <Heading py="2" textAlign="center">
+      <Heading as={Link} to="/" py="2" textAlign="center">
         LLM Meetup Tokyo
       </Heading>
 

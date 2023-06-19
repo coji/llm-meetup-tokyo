@@ -50,6 +50,9 @@ dependencies:
   '@remix-run/serve':
     specifier: 1.17.0
     version: 1.17.0
+  '@usecsv/react':
+    specifier: 0.2.21
+    version: 0.2.21(react-dom@18.2.0)(react@18.2.0)
   compression:
     specifier: 1.7.4
     version: 1.7.4
@@ -4285,6 +4288,27 @@ packages:
       eslint-visitor-keys: 3.4.1
     dev: true
 
+  /@usecsv/js@0.14.2:
+    resolution: {integrity: sha512-7PfnZImxAnhi+A/gGVlpL4gHByeS+Rv0+kixQ9Vn+GHfRupmhN2t6ITlBDi7geBuy0C+AZ81fBNqcso5RJfDrw==}
+    engines: {node: '>=10'}
+    dependencies:
+      insert-css: 2.0.0
+      penpal: 6.2.2
+      when-dom-ready: 1.2.12
+    dev: false
+
+  /@usecsv/react@0.2.21(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ya28PqqXPWMWISS4pXUIBK2XNKl6psekgda8DzL0larq9AjvBvBt/ETYbfHT/Y4vOoLPgXjQBUsIYcPgJX7LCQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      '@usecsv/js': 0.14.2
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@vanilla-extract/babel-plugin-debug-ids@1.0.3:
     resolution: {integrity: sha512-vm4jYu1xhSa6ofQ9AhIpR3DkAp4c+eoR1Rpm8/TQI4DmWbmGbOjYRcqV0aWsfaIlNhN4kFuxFMKBNN9oG6iRzA==}
     dependencies:
@@ -7071,6 +7095,10 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
+  /insert-css@2.0.0:
+    resolution: {integrity: sha512-xGq5ISgcUP5cvGkS2MMFLtPDBtrtQPSFfC6gA6U8wHKqfjTIMZLZNxOItQnoSjdOzlXOLU/yD32RKC4SvjNbtA==}
+    dev: false
+
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
     engines: {node: '>= 0.4'}
@@ -8878,6 +8906,10 @@ packages:
       duplexify: 3.7.1
       through2: 2.0.5
     dev: true
+
+  /penpal@6.2.2:
+    resolution: {integrity: sha512-RQD7hTx14/LY7QoS3tQYO3/fzVtwvZI+JeS5udgsu7FPaEDjlvfK9HBcme9/ipzSPKnrxSgacI9PI7154W62YQ==}
+    dev: false
 
   /periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
@@ -10963,6 +10995,10 @@ packages:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
     dev: true
+
+  /when-dom-ready@1.2.12:
+    resolution: {integrity: sha512-nEy7UvAylNMfOTTKE2c7QTFR2fyqTRaL/f+tuTpE4zU7iAF7Pk7aLmw6jZvhrwUTcK6pmnXFc0/N0Kzi/PHmEg==}
+    dev: false
 
   /which-boxed-primitive@1.0.2:
     resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}
