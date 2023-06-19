@@ -32,26 +32,25 @@ const discordStrategy = new DiscordStrategy(
       throw new Error('You must be a member of the guild to sign in.')
     }
 
+    const userRecord = {
+      displayName: profile.__json.username,
+      photoUrl: profile.__json.avatar
+        ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.__json.avatar}.png`
+        : null,
+      discriminator: profile.__json.discriminator,
+      email: profile.__json.email,
+    }
+
     const user = await prisma.user.upsert({
       where: {
         id: profile.id,
       },
       create: {
         id: profile.id,
-        displayName: profile.__json.username,
-        photoUrl: profile.__json.avatar
-          ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.__json.avatar}`
-          : undefined,
-        discriminator: profile.__json.discriminator,
-        email: profile.__json.email,
+        ...userRecord,
       },
       update: {
-        displayName: profile.__json.username,
-        photoUrl: profile.__json.avatar
-          ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.__json.avatar}`
-          : undefined,
-        discriminator: profile.__json.discriminator,
-        email: profile.__json.email,
+        ...userRecord,
       },
       select: {
         id: true,
