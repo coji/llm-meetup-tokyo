@@ -14,7 +14,7 @@ export interface DiscordUser {
   email?: NonNullable<DiscordProfile['__json']['email']>
 }
 
-export const sessionStorage = createCookieSessionStorage<DiscordUser>({
+export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: '__session',
     httpOnly: true,
