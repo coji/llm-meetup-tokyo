@@ -29,7 +29,7 @@ const discordStrategy = new DiscordStrategy(
       (guild) => guild.id === process.env.DISCORD_GUILD_ID,
     )
     if (!isGuildMember) {
-      throw new Error('You must be a member of the guild to sign in.')
+      throw new Error('You must be a member of the Discord Server to sign in.')
     }
 
     const userRecord = {
