@@ -17,39 +17,40 @@ model User {
   discriminator String
   email         String?
 
-  updatedAt DateTime     @updatedAt
-  createdAt DateTime     @default(now())
-  guests    EventGuest[]
-}
-
-model Event {
-  id       Int      @id @default(autoincrement())
-  name     String
-  url      String
-  coverUrl String
-  startAt  DateTime
-  endAt    DateTime
-
-  updatedAt DateTime     @updatedAt
-  createdAt DateTime     @default(now())
-  guests    EventGuest[]
-}
-
-model EventGuest {
-  id       Int     @id @default(autoincrement())
-  name     String?
-  email    String
-  fullName String
-  company  String
-  content  String
-  sns      String?
-
-  event   Event @relation(fields: [eventId], references: [id])
-  eventId Int
-
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String?
-
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
+}
+
+model LumaEvent {
+  id                    String           @id
+  name                  String //  'LLM Meetup Tokyo #3'
+  url                   String // 'llm-meetup-tokyo-3'
+  startAt               DateTime // '2023-07-05T10:00:00.501Z',
+  endAt                 DateTime // '2023-07-05T12:30:00.501Z'
+  coverUrl              String // 'https://images.unsplash.com/photo-1531219435494-8e90d22adc1e?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&ixid=M3wxMjQyMjF8MHwxfHNlYXJjaHwxNXx8VG9reW98ZW58MHwwfHx8MTY4NTkyODY0OXww&ixlib=rb-4.0.3&q=80&w=2000&h=1000'
+  socialImageUrl        String
+  registrationQuestions Json[]
+  lumaEventGuest        LumaEventGuest[]
+}
+
+model LumaUser {
+  id             String           @id
+  name           String
+  email          String
+  avatarUrl      String
+  lumaEventGuest LumaEventGuest[]
+}
+
+model LumaEventGuest {
+  id                  String    @id
+  lumaEvent           LumaEvent @relation(fields: [eventId], references: [id])
+  eventId             String
+  lumaUser            LumaUser  @relation(fields: [userId], references: [id])
+  userId              String
+  approvalStatus      String // 'invited'
+  registrationAnswers Json[]
+  updatedAt           DateTime
+  createdAt           DateTime
+
+  @@unique([eventId, userId])
 }

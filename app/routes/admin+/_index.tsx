@@ -12,10 +12,10 @@ import type { LoaderArgs } from '@remix-run/node'
 import { defer } from '@remix-run/node'
 import { Await, Link, useLoaderData } from '@remix-run/react'
 import { Suspense } from 'react'
-import { listEvents } from '~/models/event.server'
+import { listLumaEvents } from '~/models/luma-event.server'
 
 export const loader = ({ request }: LoaderArgs) => {
-  const events = listEvents()
+  const events = listLumaEvents()
   return defer({ events })
 }
 
