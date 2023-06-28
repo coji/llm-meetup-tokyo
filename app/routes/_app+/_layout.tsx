@@ -12,7 +12,7 @@ export default function AppLayout() {
         gridTemplateRows="auto 1fr auto"
         minH="100dvh"
       >
-        <AppHeader />
+        <AppHeader title="LLM Meetup Tokyo" to="/" />
         <Center>
           <Outlet />
         </Center>
