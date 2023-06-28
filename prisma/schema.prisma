@@ -29,13 +29,14 @@ model LumaEvent {
   endAt                 DateTime // '2023-07-05T12:30:00.501Z'
   coverUrl              String // 'https://images.unsplash.com/photo-1531219435494-8e90d22adc1e?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&ixid=M3wxMjQyMjF8MHwxfHNlYXJjaHwxNXx8VG9reW98ZW58MHwwfHx8MTY4NTkyODY0OXww&ixlib=rb-4.0.3&q=80&w=2000&h=1000'
   socialImageUrl        String
-  registrationQuestions Json[]
+  registrationQuestions Json
   lumaEventGuest        LumaEventGuest[]
+  lumaCrawlJob          LumaCrawlJob[]
 }
 
 model LumaUser {
   id             String           @id
-  name           String
+  name           String?
   email          String
   avatarUrl      String
   lumaEventGuest LumaEventGuest[]
@@ -48,9 +49,36 @@ model LumaEventGuest {
   lumaUser            LumaUser  @relation(fields: [userId], references: [id])
   userId              String
   approvalStatus      String // 'invited'
-  registrationAnswers Json[]
+  registrationAnswers Json
   updatedAt           DateTime
   createdAt           DateTime
 
   @@unique([eventId, userId])
+}
+
+enum LumaCrawlState {
+  CREATED
+  RUNNING
+  DONE
+  ERROR
+}
+
+model LumaCrawlJob {
+  id        Int            @id @default(autoincrement())
+  url       String
+  status    LumaCrawlState @default(CREATED)
+  logs      Json[]
+  error     String?
+  lumaEvent LumaEvent?     @relation(fields: [eventId], references: [id])
+  eventId   String?
+  updatedAt DateTime       @updatedAt
+  createdAt DateTime       @default(now())
+}
+
+model Config {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
