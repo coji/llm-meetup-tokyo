@@ -33,7 +33,7 @@ export default function EventImportPage() {
     <Stack>
       <AppBreadcrumbs
         items={[
-          { label: 'Top', to: '/' },
+          { label: 'Admin', to: '/admin' },
           { label: 'Import', isCurrentPage: true },
         ]}
       />

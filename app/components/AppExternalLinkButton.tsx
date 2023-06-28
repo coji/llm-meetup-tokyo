@@ -1,13 +1,13 @@
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { Box, Button } from '@chakra-ui/react'
 
-export const LumaLinkButton = ({ url }: { url: string }) => {
+export const AppExternalLinkButton = ({ url }: { url: string }) => {
   return (
     <Box>
       <Button
         rightIcon={<ExternalLinkIcon />}
         as="a"
-        href={`https://lu.ma/${url}`}
+        href={url}
         target="_blank"
         w="auto"
         size="sm"

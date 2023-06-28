@@ -8,7 +8,7 @@ export const AppSignInButton = () => {
     <Button
       as={Link}
       to="/auth/discord"
-      colorScheme="blue"
+      colorScheme="discord"
       w={['full', 'auto']}
       isLoading={
         navigation.state !== 'idle' &&

@@ -3,6 +3,13 @@ import { prisma } from '~/services/database.server'
 
 export const listLumaEvents = async () => {
   return await prisma.lumaEvent.findMany({
+    include: {
+      lumaEventGuest: {
+        include: { lumaUser: true },
+        where: { approvalStatus: { in: ['approved', 'invited'] } },
+        orderBy: { createdAt: 'desc' },
+      },
+    },
     orderBy: { startAt: 'desc' },
   })
 }

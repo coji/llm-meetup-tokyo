@@ -1,4 +1,5 @@
 export { AppBreadcrumbs } from './AppBreadcrumbs'
+export { AppExternalLinkButton } from './AppExternalLinkButton'
 export { AppFooter } from './AppFooter'
 export { AppHeader } from './AppHeader'
 export { AppLoginPane } from './AppLoginPane'

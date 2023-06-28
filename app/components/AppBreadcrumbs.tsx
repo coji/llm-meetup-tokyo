@@ -11,7 +11,7 @@ interface AppBreadcrumbsProps {
 }
 export const AppBreadcrumbs = ({ items }: AppBreadcrumbsProps) => {
   return (
-    <Breadcrumb>
+    <Breadcrumb fontSize="sm" color="gray.500">
       {items.map((item, idx) => {
         return (
           <BreadcrumbItem key={idx} isCurrentPage={item.isCurrentPage}>

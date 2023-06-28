@@ -1,10 +1,10 @@
-import { Box, Button, Grid, HStack, Spacer, Stack } from '@chakra-ui/react'
+import { Button, Grid, HStack, Spacer, Stack } from '@chakra-ui/react'
 import type { LoaderArgs } from '@remix-run/node'
 import { Link as RemixLink } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
-import { AppBreadcrumbs } from '~/components'
+import { AppBreadcrumbs, AppExternalLinkButton } from '~/components'
 import { EventCard } from '~/components/EventCard'
-import { LumaLinkButton } from '~/components/LumaLinkButton'
+
 import { listLumaEvents } from '~/models/luma-event.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -17,13 +17,8 @@ export default function AdminIndex() {
 
   return (
     <Grid gridTemplateRows="auto 1fr" gap="4">
-      <HStack>
-        <AppBreadcrumbs
-          items={[
-            { label: 'Top', to: '/' },
-            { label: 'Admin', isCurrentPage: true },
-          ]}
-        />
+      <HStack align="start">
+        <AppBreadcrumbs items={[{ label: 'Admin', isCurrentPage: true }]} />
 
         <Spacer />
         <Button
@@ -47,9 +42,20 @@ export default function AdminIndex() {
               event={event}
               key={event.id}
               action={
-                <Box>
-                  <LumaLinkButton url={event.url} />
-                </Box>
+                <HStack>
+                  <AppExternalLinkButton url={event.url} />
+
+                  <Button
+                    size="sm"
+                    as={RemixLink}
+                    to={`event/${event.id}/fetch`}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                    }}
+                  >
+                    Fetch
+                  </Button>
+                </HStack>
               }
             />
           ))

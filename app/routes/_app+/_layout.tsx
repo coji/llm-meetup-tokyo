@@ -3,7 +3,6 @@ import { Outlet } from '@remix-run/react'
 import { AppFooter, AppHeader } from '~/components'
 
 export default function AppLayout() {
-  console.log('app layout')
   return (
     <>
       <Container

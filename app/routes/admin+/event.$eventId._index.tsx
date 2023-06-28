@@ -23,7 +23,6 @@ export default function AdminEventDetailPage() {
     <Stack>
       <AppBreadcrumbs
         items={[
-          { label: 'Top', to: '/' },
           { label: 'Admin', to: '/admin' },
           { label: event.name, isCurrentPage: true },
         ]}

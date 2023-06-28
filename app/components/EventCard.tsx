@@ -8,13 +8,13 @@ import {
   Stack,
   type CardProps,
 } from '@chakra-ui/react'
-import type { LumaEvent } from '@prisma/client'
 import { useNavigate } from '@remix-run/react'
+import type { listLumaEvents } from '~/models/luma-event.server'
 import dayjs from '~/utils/dayjs'
 
 interface EventCardProps extends CardProps {
   to?: string
-  event: LumaEvent
+  event: Awaited<ReturnType<typeof listLumaEvents>>[0]
   action?: React.ReactNode
 }
 export const EventCard = ({ to, event, action, ...rest }: EventCardProps) => {
@@ -42,7 +42,23 @@ export const EventCard = ({ to, event, action, ...rest }: EventCardProps) => {
 
               {action}
 
-              <Box>{JSON.stringify(event.registrationQuestions, null, 2)}</Box>
+              <Stack>
+                <Box>{event.lumaEventGuest.length}人</Box>
+                {event.lumaEventGuest.map((guest, idx) => {
+                  return (
+                    <HStack key={guest.id}>
+                      <Box>{idx + 1}</Box>
+                      <Box>
+                        {dayjs(guest.createdAt).format('YYYY-MM-DD HH:mm')}
+                      </Box>
+                      <Box>
+                        {JSON.stringify(guest.lumaUser.name ?? 'Anonymous')}
+                      </Box>
+                      <Box>{guest.approvalStatus}</Box>
+                    </HStack>
+                  )
+                })}
+              </Stack>
             </Stack>
 
             <Image
