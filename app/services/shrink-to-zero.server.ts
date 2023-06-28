@@ -6,5 +6,5 @@ export const keepAwake = () => {
   // production only
   if (process.env.NODE_ENV !== 'production') return
   if (sleepTimeout) clearTimeout(sleepTimeout)
-  sleepTimeout = setTimeout(() => process.exit(0), 10_000)
+  sleepTimeout = setTimeout(() => process.exit(0), 1_000 * 60 * 30) // 30分は生かしておく
 }
