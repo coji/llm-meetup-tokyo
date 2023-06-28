@@ -5,11 +5,11 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Link,
   Stack,
 } from '@chakra-ui/react'
-import type { ActionArgs } from '@remix-run/node'
-import { redirect } from '@remix-run/node'
-import { Form } from '@remix-run/react'
+import { redirect, type ActionArgs } from '@remix-run/node'
+import { Form, Link as RemixLink } from '@remix-run/react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { upsertLumaEvent } from '~/models/luma-event.server'
@@ -38,6 +38,9 @@ export const action = async ({ request }: ActionArgs) => {
 export default function EventNewPage() {
   return (
     <Box>
+      <Link as={RemixLink} to="..">
+        ×
+      </Link>
       <Form method="POST">
         <Stack>
           <FormControl>

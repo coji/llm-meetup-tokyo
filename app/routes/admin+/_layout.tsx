@@ -1,6 +1,6 @@
-import { Container, HStack, Heading, Spacer } from '@chakra-ui/react'
+import { Container, HStack, Heading, Link, Spacer } from '@chakra-ui/react'
 import { json, type LoaderArgs } from '@remix-run/node'
-import { Link, Outlet } from '@remix-run/react'
+import { Outlet, Link as RemixLink } from '@remix-run/react'
 import { authenticator } from '~/services/auth.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -17,11 +17,13 @@ export default function AdminIndexPage() {
       gridTemplateRows="auto 1fr"
     >
       <HStack>
-        <Heading as={Link} to="/admin">
+        <Heading as={RemixLink} to="/admin">
           Admin
         </Heading>
         <Spacer />
-        <Link to="/">Top</Link>
+        <Link as={RemixLink} to="/">
+          Top
+        </Link>
       </HStack>
 
       <Outlet />

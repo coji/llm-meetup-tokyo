@@ -12,12 +12,13 @@ import {
 import { createHead } from 'remix-island'
 import { authenticator } from './services/auth.server'
 import { keepAwake } from './services/shrink-to-zero.server'
+import { theme } from './theme'
 
 export const meta: V2_MetaFunction = () => [
   { charSet: 'utf-8' },
   { name: 'viewport', content: 'width=device-width,initial-scale=1' },
-  { title: 'App' },
-  { name: 'description', content: 'Awesome App.' },
+  { title: 'LLM Meetup Tokyo' },
+  { name: 'description', content: 'Meetup Assistant' },
 ]
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -39,7 +40,7 @@ export default function App() {
   return (
     <>
       <Head />
-      <ChakraProvider resetCSS>
+      <ChakraProvider resetCSS theme={theme}>
         <Outlet />
       </ChakraProvider>
       <ScrollRestoration />

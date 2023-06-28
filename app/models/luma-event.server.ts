@@ -1,15 +1,14 @@
 import type { Prisma } from '@prisma/client'
-import { setTimeout } from 'timers/promises'
 import { prisma } from '~/services/database.server'
 
 export const listLumaEvents = async () => {
-  await setTimeout(2000)
   return await prisma.lumaEvent.findMany({
     select: {
       id: true,
       name: true,
       startAt: true,
       endAt: true,
+      coverUrl: true,
       socialImageUrl: true,
       url: true,
     },
