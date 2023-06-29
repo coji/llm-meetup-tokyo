@@ -20,6 +20,7 @@ export const runLumaCrawlJob = async (url: string) => {
   // ジョブの作成
   const job = await createLumaCrawlJob(url)
   const client = createLumaClient()
+  let event = null
 
   try {
     // セッション
@@ -63,24 +64,24 @@ export const runLumaCrawlJob = async (url: string) => {
       status: 'RUNNING',
       log: `イベント情報を取得開始: ${url}`,
     })
-    const event = await client.getEventInfo(url)
-    await upsertLumaEvent({
-      id: event.api_id,
-      name: event.name,
-      startAt: event.start_at,
-      url: `https://lu.ma/${event.url}`,
-      geoAddress: event.geo_address_info.address,
-      geoCityState: event.geo_address_info.city_state,
-      geoPlaceId: event.geo_address_info.place_id,
+    const lumaEvent = await client.getEventInfo(url)
+    event = await upsertLumaEvent({
+      id: lumaEvent.api_id,
+      name: lumaEvent.name,
+      startAt: lumaEvent.start_at,
+      url: `https://lu.ma/${lumaEvent.url}`,
+      geoAddress: lumaEvent.geo_address_info.address,
+      geoCityState: lumaEvent.geo_address_info.city_state,
+      geoPlaceId: lumaEvent.geo_address_info.place_id,
       guestCount: 0,
-      coverUrl: event.cover_url,
-      endAt: event.end_at,
-      socialImageUrl: event.social_image_url,
-      registrationQuestions: event.registration_questions,
+      coverUrl: lumaEvent.cover_url,
+      endAt: lumaEvent.end_at,
+      socialImageUrl: lumaEvent.social_image_url,
+      registrationQuestions: lumaEvent.registration_questions,
     })
     await updateLumaCrawlJob({
       id: job.id,
-      eventId: event.api_id,
+      eventId: lumaEvent.api_id,
       status: 'RUNNING',
       log: 'イベント情報取得完了',
     })
@@ -91,7 +92,7 @@ export const runLumaCrawlJob = async (url: string) => {
       status: 'RUNNING',
       log: '参加者リストを取得開始',
     })
-    const guests = await client.listEventGuests(event.api_id)
+    const guests = await client.listEventGuests(lumaEvent.api_id)
     await upsertLumaEventGuests(guests)
     await updateLumaCrawlJob({
       id: job.id,
@@ -100,7 +101,7 @@ export const runLumaCrawlJob = async (url: string) => {
     })
 
     // 参加者数の更新
-    await updateLumaEvent(event.api_id, {
+    await updateLumaEvent(lumaEvent.api_id, {
       guestCount: guests.filter(
         (guest) =>
           guest.approval_status === 'approved' ||
@@ -122,4 +123,5 @@ export const runLumaCrawlJob = async (url: string) => {
       log: String(e),
     })
   }
+  return event
 }
