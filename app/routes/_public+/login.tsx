@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Box, Stack, Text } from '@chakra-ui/react'
+import { Alert, AlertIcon, Box, Center, Text } from '@chakra-ui/react'
 import { json, type LoaderArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { AppSignInButton } from '~/components/AppSignInButton'
@@ -29,7 +29,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function LoginPage() {
   const { errorMessage } = useLoaderData<typeof loader>()
   return (
-    <Stack>
+    <Center>
       <AppSignInButton />
 
       {errorMessage && (
@@ -41,6 +41,6 @@ export default function LoginPage() {
           </Box>
         </Alert>
       )}
-    </Stack>
+    </Center>
   )
 }

@@ -1,17 +1,23 @@
-import { Box, Link } from '@chakra-ui/react'
+import { Link, Stack } from '@chakra-ui/react'
 
 export const AppFooter = () => {
   return (
-    <Box textAlign="center" p="2" pt="8">
-      <Box>
-        <Link
-          href="https://github.com/coji/llm-meetup-tokyo"
-          isExternal
-          rel="noreferrer"
-        >
-          GitHub
-        </Link>
-      </Box>
-    </Box>
+    <Stack p="4" direction={{ base: 'column', md: 'row' }} justify="center">
+      <Link
+        href="https://github.com/coji/llm-meetup-tokyo"
+        isExternal
+        rel="noreferrer"
+      >
+        GitHub
+      </Link>
+
+      <Link
+        href="https://discord.com/channels/1083356163074170950"
+        isExternal
+        rel="noreferrer"
+      >
+        Discord
+      </Link>
+    </Stack>
   )
 }

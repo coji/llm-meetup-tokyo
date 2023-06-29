@@ -12,15 +12,15 @@ import {
   Text,
   type CardProps,
 } from '@chakra-ui/react'
+import type { LumaEvent } from '@prisma/client'
 import { useNavigate } from '@remix-run/react'
 import { RiMapPinLine, RiTeamLine } from 'react-icons/ri'
-import type { listLumaEvents } from '~/models/luma-event.server'
 import dayjs from '~/utils/dayjs'
 import { AppLinkButton } from './AppLinkButton'
 
 interface EventCardProps extends CardProps {
   to?: string
-  event: Awaited<ReturnType<typeof listLumaEvents>>[0]
+  event: LumaEvent
   children?: React.ReactNode
 }
 export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
@@ -97,9 +97,7 @@ export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
               <AppLinkButton to={event.url} isExternal>
                 Luma Event Page
               </AppLinkButton>
-              <AppLinkButton to={`/admin/event/${event.id}/sync`}>
-                Sync
-              </AppLinkButton>
+              <AppLinkButton to={`/event/${event.id}/sync`}>Sync</AppLinkButton>
             </HStack>
           </Stack>
         </Grid>

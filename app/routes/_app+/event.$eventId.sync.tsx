@@ -49,8 +49,8 @@ export default function EventSyncPage() {
     <Stack>
       <AppBreadcrumbs
         items={[
-          { label: 'Admin', to: '/admin' },
-          { label: event.name, to: `/admin/event/${event.id}` },
+          { label: 'Top', to: '/' },
+          { label: event.name, to: `/event/${event.id}` },
           { label: 'Sync', isCurrentPage: true },
         ]}
       />

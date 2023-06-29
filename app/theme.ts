@@ -17,8 +17,8 @@ export const theme = extendTheme({
   },
   config: { useSystemColorMode: false, initialColorMode: 'light' },
   components: {
-    Link: { baseStyle: { color: 'gray.500' } },
-    Heading: { baseStyle: { color: 'gray.700' } },
+    Link: { baseStyle: { color: 'gray.600' } },
+    Heading: { baseStyle: { color: 'gray.600' } },
   },
   styles: {
     global: {

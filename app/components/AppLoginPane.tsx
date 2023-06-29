@@ -15,7 +15,7 @@ import { useSessionUser } from '~/hooks/use-session-user'
 export const AppLoginPane = (props: StackProps) => {
   const user = useSessionUser()
   if (!user) {
-    return <div></div>
+    return <></>
   }
 
   return (
