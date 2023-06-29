@@ -41,7 +41,7 @@ export default function EventFetchPage() {
       <AppBreadcrumbs
         items={[
           { label: 'Admin', to: '/admin' },
-          { label: event.name },
+          { label: event.name, to: `/admin/event/${event.id}` },
           { label: 'Fetch', isCurrentPage: true },
         ]}
       />
