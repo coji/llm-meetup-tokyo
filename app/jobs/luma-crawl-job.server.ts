@@ -79,7 +79,6 @@ export const runLumaCrawlJob = async (url: string) => {
       log: '参加者リストを取得開始',
     })
     const guests = await client.listEventGuests(event.api_id)
-    console.log(JSON.stringify(guests, null, 2))
     await upsertLumaEventGuests(guests)
     await updateLumaCrawlJob({
       id: job.id,
