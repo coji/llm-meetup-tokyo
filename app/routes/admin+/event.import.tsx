@@ -21,9 +21,12 @@ export const action = async ({ request }: ActionArgs) => {
   })
 
   // 同期的にクロール
-  await runLumaCrawlJob(url)
+  const event = await runLumaCrawlJob(url)
+  if (!event) {
+    throw new Error('Failed to crawl event')
+  }
 
-  return redirect('..')
+  return redirect(`/event/${event.id}`)
 }
 
 export default function EventImportPage() {

@@ -9,7 +9,7 @@ interface AppHeaderProps extends FlexProps {
 }
 export const AppHeader = ({ title, to, ...rest }: AppHeaderProps) => {
   return (
-    <Flex {...rest}>
+    <Flex {...rest} align="center">
       <Heading
         as={Link}
         to={to}
