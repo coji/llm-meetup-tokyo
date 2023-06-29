@@ -57,14 +57,18 @@ export default function EventDetailPage() {
             {guests.map((guest) => {
               return (
                 <React.Fragment key={guest.id}>
-                  <HStack>
+                  <HStack p="1">
                     <Avatar size="xs" src={guest.lumaUser.avatarUrl}></Avatar>
                     <Box maxW="12rem">
                       <Text color="gray.600">
                         {guest.lumaUser.name ?? 'Anonymous'}
                       </Text>
 
-                      <Text fontSize="xs" color="gray.400">
+                      <Text
+                        fontSize="xs"
+                        color="gray.400"
+                        wordBreak="break-word"
+                      >
                         <Linkify
                           options={{
                             defaultProtocol: 'https',
@@ -76,7 +80,14 @@ export default function EventDetailPage() {
                       </Text>
                     </Box>
                   </HStack>
-                  <Box fontSize="sm" color="gray.600" p="2" roundedRight="md">
+
+                  <Box
+                    fontSize="sm"
+                    color="gray.600"
+                    p="1"
+                    roundedRight="md"
+                    wordBreak="break-word"
+                  >
                     <Linkify
                       options={{ defaultProtocol: 'https', target: '_blank' }}
                     >
