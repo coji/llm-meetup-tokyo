@@ -2,7 +2,7 @@ import { Button, Grid, HStack, Spacer, Stack } from '@chakra-ui/react'
 import type { LoaderArgs } from '@remix-run/node'
 import { Link as RemixLink } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
-import { AppBreadcrumbs, AppExternalLinkButton } from '~/components'
+import { AppBreadcrumbs } from '~/components'
 import { EventCard } from '~/components/EventCard'
 import { listLumaEvents } from '~/models'
 
@@ -36,27 +36,7 @@ export default function AdminIndex() {
           <div>no events</div>
         ) : (
           events.map((event) => (
-            <EventCard
-              to={`event/${event.id}`}
-              event={event}
-              key={event.id}
-              action={
-                <HStack>
-                  <AppExternalLinkButton url={event.url} />
-
-                  <Button
-                    size="sm"
-                    as={RemixLink}
-                    to={`event/${event.id}/sync`}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                    }}
-                  >
-                    Sync
-                  </Button>
-                </HStack>
-              }
-            />
+            <EventCard to={`event/${event.id}`} event={event} key={event.id} />
           ))
         )}
       </Stack>

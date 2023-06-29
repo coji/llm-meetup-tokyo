@@ -25,12 +25,15 @@ model LumaEvent {
   id                    String           @id
   name                  String //  'LLM Meetup Tokyo #3'
   url                   String // 'llm-meetup-tokyo-3'
+  geoAddress            String // 'PKSHA STUDIO'
+  geoCityState          String // 'Bunkyo City, Tokyo'
+  geoPlaceId            String // 'ChIJS9x7qViNGGAR7X8Lq7WB2u4'
   startAt               DateTime // '2023-07-05T10:00:00.501Z',
   endAt                 DateTime // '2023-07-05T12:30:00.501Z'
   coverUrl              String // 'https://images.unsplash.com/photo-1531219435494-8e90d22adc1e?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&ixid=M3wxMjQyMjF8MHwxfHNlYXJjaHwxNXx8VG9reW98ZW58MHwwfHx8MTY4NTkyODY0OXww&ixlib=rb-4.0.3&q=80&w=2000&h=1000'
   socialImageUrl        String
   registrationQuestions Json
-  guestCount            Int?  // ゲスト数: 表示用
+  guestCount            Int // ゲスト数: 表示用
   lumaEventGuest        LumaEventGuest[]
   lumaCrawlJob          LumaCrawlJob[]
 }

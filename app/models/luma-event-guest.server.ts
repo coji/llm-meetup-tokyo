@@ -50,3 +50,11 @@ export const upsertLumaEventGuests = async (guests: LumaApiGuest[]) => {
     ])
   }
 }
+
+export const listEventGuests = async (eventId: string) => {
+  return await prisma.lumaEventGuest.findMany({
+    where: { eventId, approvalStatus: 'approved' },
+    include: { lumaUser: true },
+    orderBy: { createdAt: 'desc' },
+  })
+}

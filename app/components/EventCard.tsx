@@ -1,24 +1,29 @@
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 import {
   Box,
-  Button,
   Card,
   CardBody,
+  Grid,
   HStack,
   Heading,
   Image,
+  Link,
   Stack,
+  Text,
   type CardProps,
 } from '@chakra-ui/react'
 import { useNavigate } from '@remix-run/react'
+import { RiMapPinLine, RiTeamLine } from 'react-icons/ri'
 import type { listLumaEvents } from '~/models/luma-event.server'
 import dayjs from '~/utils/dayjs'
+import { AppLinkButton } from './AppLinkButton'
 
 interface EventCardProps extends CardProps {
   to?: string
   event: Awaited<ReturnType<typeof listLumaEvents>>[0]
-  action?: React.ReactNode
+  children?: React.ReactNode
 }
-export const EventCard = ({ to, event, action, ...rest }: EventCardProps) => {
+export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
   const navigate = useNavigate()
   return (
     <Card
@@ -31,55 +36,73 @@ export const EventCard = ({ to, event, action, ...rest }: EventCardProps) => {
       {...rest}
     >
       <CardBody>
-        <Stack>
-          <HStack alignItems="start">
-            <Stack flex="1" position="relative">
-              <Button
-                position="absolute"
-                top="0"
-                right="0"
-                size="xs"
-                variant="ghost"
-                color="gray.500"
-              >
-                ...
-              </Button>
-              <Box color="gray.500">
+        <Grid
+          gridTemplateRows={{ base: 'auto 1fr', md: '1fr' }}
+          gridTemplateColumns={{ base: '1fr', md: 'auto 1fr' }}
+          gap="4"
+        >
+          <Image
+            w={{ base: 'full', md: '64' }}
+            rounded="md"
+            objectFit="cover"
+            src={event.coverUrl}
+            alt={event.name}
+          />
+
+          <Stack spacing="1">
+            {/* Heading */}
+            <Box>
+              <Text color="gray.600" fontSize="sm">
                 {dayjs(event.startAt)
                   .tz('Asia/Tokyo')
                   .format('M月D日 dddd HH:mm')}
-              </Box>
+              </Text>
               <Heading size="md">{event.name}</Heading>
+            </Box>
 
-              {event.guestCount && <Box>{event.guestCount} Guests</Box>}
+            {/* Guests and Geo */}
+            <Stack
+              color="gray.600"
+              fontSize="sm"
+              gap={{ base: '1', md: '4' }}
+              direction={{ base: 'column', md: 'row' }}
+            >
+              <HStack>
+                <Box rounded="md" border="1px" borderColor="gray.200" p="2">
+                  <RiTeamLine />
+                </Box>
+                <Text>{event.guestCount} Guests</Text>
+              </HStack>
+
+              <HStack>
+                <Box rounded="md" border="1px" borderColor="gray.200" p="2">
+                  <RiMapPinLine />
+                </Box>
+                <Box>
+                  <Link
+                    href={`https://www.google.com/maps/search/?api=1&query=${event.geoAddress}&query_place_id=${event.geoPlaceId}`}
+                    isExternal
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Text>
+                      {event.geoAddress} <ExternalLinkIcon />
+                    </Text>
+                    <Text fontSize="xs">{event.geoCityState}</Text>
+                  </Link>
+                </Box>
+              </HStack>
             </Stack>
 
-            <Image
-              w={{ base: '24', md: '48' }}
-              rounded="md"
-              objectFit="cover"
-              src={event.coverUrl}
-              alt={event.name}
-            />
-          </HStack>
-
-          {action}
-
-          <Stack>
-            {event.lumaEventGuest.map((guest, idx) => {
-              return (
-                <HStack key={guest.id}>
-                  <Box>{idx + 1}</Box>
-                  <Box>{dayjs(guest.createdAt).format('YYYY-MM-DD HH:mm')}</Box>
-                  <Box>
-                    {JSON.stringify(guest.lumaUser.name ?? 'Anonymous')}
-                  </Box>
-                  <Box>{guest.approvalStatus}</Box>
-                </HStack>
-              )
-            })}
+            <HStack>
+              <AppLinkButton to={event.url} isExternal>
+                Luma Event Page
+              </AppLinkButton>
+              <AppLinkButton to={`/admin/event/${event.id}/sync`}>
+                Sync
+              </AppLinkButton>
+            </HStack>
           </Stack>
-        </Stack>
+        </Grid>
       </CardBody>
     </Card>
   )

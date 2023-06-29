@@ -9,12 +9,18 @@ export interface LumaApiEvent {
   end_at: string // '2023-07-05T12:30:00.501Z'
   name: string //  'LLM Meetup Tokyo #3'
   url: string // 'llm-meetup-tokyo-3'
+  geo_address_info: {
+    address: string // 'PKSHA STUDIO'
+    place_id: string // 'ChIJS9x7qViNGGAR7X8Lq7WB2u4'
+    city_state: string // 'Bunkyo City, Tokyo'
+  }
   registration_questions: {
     id: string // 'ce9g8l58'
     label: string // '氏名 (ビル入館に必要: フルネーム)'
     required: boolean // true
     question_type: 'text'
   }[]
+
   social_image_url: string // 'https://social-images.lu.ma/api/event-social-image?event_name=LLM%20Meetup%20Tokyo%20%233&event_start_at=2023-07-05T10%3A00%3A00.501Z&event_theme=legacy&event_timezone=Asia%2FTokyo&host_avatar_url=https%3A%2F%2Fimages.lumacdn.com%2Favatars%2Fzv%2F82b8cc3e-8d10-4b70-8b79-d5ffcc559cb8&host_name=coji'
 }
 
@@ -47,6 +53,7 @@ const shapeLumaEvent = (event: LumaApiEvent): LumaApiEvent => ({
   end_at: event.end_at,
   name: event.name,
   url: event.url,
+  geo_address_info: event.geo_address_info,
   registration_questions: event.registration_questions.map((q) => ({
     id: q.id,
     label: q.label,
