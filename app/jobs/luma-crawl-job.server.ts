@@ -4,6 +4,7 @@ import {
   getConfigs,
   isRunningLumaCrawlJob,
   updateLumaCrawlJob,
+  updateLumaEvent,
   upsertConfig,
   upsertLumaEvent,
   upsertLumaEventGuests,
@@ -92,6 +93,15 @@ export const runLumaCrawlJob = async (url: string) => {
       id: job.id,
       status: 'RUNNING',
       log: `参加者リスト取得完了: ${guests.length}件`,
+    })
+
+    // 参加者数の更新
+    await updateLumaEvent(event.api_id, {
+      guestCount: guests.filter(
+        (guest) =>
+          guest.approval_status === 'approved' ||
+          guest.approval_status === 'invited',
+      ).length,
     })
 
     // ジョブの完了

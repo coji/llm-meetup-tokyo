@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { LumaEvent, Prisma } from '@prisma/client'
 import { prisma } from '~/services/database.server'
 
 export const listLumaEvents = async () => {
@@ -19,6 +19,16 @@ export const upsertLumaEvent = async (data: Prisma.LumaEventCreateInput) => {
     where: { id: data.id },
     create: data,
     update: data,
+  })
+}
+
+export const updateLumaEvent = async (
+  id: LumaEvent['id'],
+  data: Prisma.LumaEventUpdateInput,
+) => {
+  return await prisma.lumaEvent.update({
+    where: { id },
+    data,
   })
 }
 

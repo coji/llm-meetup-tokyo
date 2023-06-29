@@ -30,6 +30,7 @@ model LumaEvent {
   coverUrl              String // 'https://images.unsplash.com/photo-1531219435494-8e90d22adc1e?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&ixid=M3wxMjQyMjF8MHwxfHNlYXJjaHwxNXx8VG9reW98ZW58MHwwfHx8MTY4NTkyODY0OXww&ixlib=rb-4.0.3&q=80&w=2000&h=1000'
   socialImageUrl        String
   registrationQuestions Json
+  guestCount            Int?  // ゲスト数: 表示用
   lumaEventGuest        LumaEventGuest[]
   lumaCrawlJob          LumaCrawlJob[]
 }
