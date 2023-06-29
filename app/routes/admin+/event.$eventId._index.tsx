@@ -4,7 +4,7 @@ import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { AppBreadcrumbs } from '~/components'
-import { getEventById } from '~/models/luma-event.server'
+import { getEventById } from '~/models'
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId } = zx.parseParams(params, {

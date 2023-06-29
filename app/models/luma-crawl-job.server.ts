@@ -55,3 +55,16 @@ export const updateLumaCrawlJob = async ({
   })
   return job
 }
+
+/**
+ * リストを取得
+ * @param eventId
+ * @returns
+ */
+export const listLumaCrawlJobs = async (eventId: string, take = 10) => {
+  return await prisma.lumaCrawlJob.findMany({
+    where: { eventId },
+    orderBy: { createdAt: 'desc' },
+    take,
+  })
+}

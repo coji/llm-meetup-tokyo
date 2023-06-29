@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import dayjs from 'dayjs'
-import { getConfigs, upsertConfig } from '~/models/config.server'
 import {
   createLumaCrawlJob,
+  getConfigs,
   isRunningLumaCrawlJob,
   updateLumaCrawlJob,
-} from '~/models/luma-crawl-job.server'
-import { upsertLumaEventGuests } from '~/models/luma-event-guest.server'
-import { upsertLumaEvent } from '~/models/luma-event.server'
+  upsertConfig,
+  upsertLumaEvent,
+  upsertLumaEventGuests,
+} from '~/models'
+
 import { createLumaClient } from '~/services/luma.server'
 
 export const runLumaCrawlJob = async (url: string) => {
@@ -23,8 +24,13 @@ export const runLumaCrawlJob = async (url: string) => {
     // セッション
     const { 'luma.session': session, 'luma.session-expires': expires } =
       await getConfigs(['luma.session', 'luma.session-expires'])
-    if (session && dayjs(expires).isBefore(dayjs())) {
+    if (session && dayjs(expires).isAfter(dayjs())) {
       // セッションが存在し、有効期限内の場合はそれを使う
+      await updateLumaCrawlJob({
+        id: job.id,
+        status: 'RUNNING',
+        log: `セッション有効期限: ${expires ?? ''}`,
+      })
       client.setSession(session)
     } else {
       await updateLumaCrawlJob({
@@ -35,7 +41,9 @@ export const runLumaCrawlJob = async (url: string) => {
 
       // サインインしてセッションを取得/保存
       const { session, expires } = await client.signIn({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         email: process.env.LUMA_ADMIN_EMAIL!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         password: process.env.LUMA_ADMIN_PASSWORD!,
       })
       await upsertConfig('luma.session', session)
@@ -52,7 +60,7 @@ export const runLumaCrawlJob = async (url: string) => {
     await updateLumaCrawlJob({
       id: job.id,
       status: 'RUNNING',
-      log: 'イベント情報を取得開始',
+      log: `イベント情報を取得開始: ${url}`,
     })
     const event = await client.getEventInfo(url)
     await upsertLumaEvent({
@@ -83,7 +91,7 @@ export const runLumaCrawlJob = async (url: string) => {
     await updateLumaCrawlJob({
       id: job.id,
       status: 'RUNNING',
-      log: '参加者リスト取得完了',
+      log: `参加者リスト取得完了: ${guests.length}件`,
     })
 
     // ジョブの完了

@@ -4,8 +4,7 @@ import { Link as RemixLink } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { AppBreadcrumbs, AppExternalLinkButton } from '~/components'
 import { EventCard } from '~/components/EventCard'
-
-import { listLumaEvents } from '~/models/luma-event.server'
+import { listLumaEvents } from '~/models'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const events = await listLumaEvents()
@@ -48,12 +47,12 @@ export default function AdminIndex() {
                   <Button
                     size="sm"
                     as={RemixLink}
-                    to={`event/${event.id}/fetch`}
+                    to={`event/${event.id}/sync`}
                     onClick={(e) => {
                       e.stopPropagation()
                     }}
                   >
-                    Fetch
+                    Sync
                   </Button>
                 </HStack>
               }

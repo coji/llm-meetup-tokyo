@@ -1,8 +1,8 @@
 import { Authenticator } from 'remix-auth'
 import { DiscordStrategy, type PartialDiscordGuild } from 'remix-auth-discord'
 import invariant from 'tiny-invariant'
-import { sessionStorage, type DiscordUser } from '~/services/session.server'
 import { prisma } from './database.server'
+import { sessionStorage, type DiscordUser } from './session.server'
 
 invariant(process.env.DISCORD_CLIENT_ID, 'DISCORD_CLIENT_ID should be defined.')
 invariant(
