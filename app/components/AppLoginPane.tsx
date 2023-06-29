@@ -11,11 +11,12 @@ import {
 } from '@chakra-ui/react'
 import { Link } from '@remix-run/react'
 import { useSessionUser } from '~/hooks/use-session-user'
+import { AppLinkButton } from './AppLinkButton'
 
 export const AppLoginPane = (props: StackProps) => {
   const user = useSessionUser()
   if (!user) {
-    return <></>
+    return <AppLinkButton to="/login">Sign In</AppLinkButton>
   }
 
   return (
