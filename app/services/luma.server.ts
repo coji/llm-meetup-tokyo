@@ -141,16 +141,44 @@ export const createLumaClient = () => {
       throw new Error('No session key found. You should sign-in first.')
     }
 
-    const ret = await fetch(
-      `https://api.lu.ma/event/guests?event_api_id=${eventId}&query=&sort_direction=desc&sort_column=created_at&pagination_limit=100`,
-      {
-        method: 'GET',
-        headers: { Cookie: `luma.auth-session-key=${session}` },
-      },
-    )
+    // https://api.lu.ma/event/guests?event_api_id=evt-BMEa7jLL9eKt4FR&query=&sort_direction=desc&sort_column=created_at&pagination_cursor=gst-zbdOV8PCBmrMHut&pagination_limit=100
+    // {
+    //   "entries": [{}]
+    //   "has_more": true,
+    //   "next_cursor": "gst-zbdOV8PCBmrMHut"
+    // }
+    let allGuests: LumaApiGuest[] = []
+    let hasMore
+    let nextCursor
+    do {
+      const params = new URLSearchParams({
+        event_api_id: eventId,
+        query: '',
+        sort_direction: 'desc',
+        sort_column: 'created_at',
+        pagination_limit: '100',
+      })
+      if (nextCursor) params.append('pagination_cursor', nextCursor)
 
-    const guests = (await ret.json()).entries as LumaApiGuest[]
-    return shapeLumaGuests(guests)
+      const ret = await fetch(
+        `https://api.lu.ma/event/guests?${params.toString()}`,
+        {
+          method: 'GET',
+          headers: { Cookie: `luma.auth-session-key=${session}` },
+        },
+      )
+
+      const json = (await ret.json()) as {
+        entries: LumaApiGuest[]
+        has_more: boolean
+        next_cursor?: string
+      }
+      hasMore = json.has_more
+      nextCursor = json.next_cursor
+      const guests = json.entries
+      allGuests = [...allGuests, ...shapeLumaGuests(guests)]
+    } while (hasMore)
+    return allGuests
   }
 
   return {
