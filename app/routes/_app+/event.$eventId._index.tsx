@@ -4,7 +4,7 @@ import {
   Box,
   Card,
   CardBody,
-  Grid,
+  Flex,
   HStack,
   Heading,
   Spacer,
@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react'
 import { type LoaderArgs } from '@remix-run/node'
 import Linkify from 'linkify-react'
-import React from 'react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
@@ -47,7 +46,7 @@ export default function EventDetailPage() {
       <EventCard event={event} key={event.id} />
 
       <Card>
-        <CardBody>
+        <CardBody px="4">
           <HStack align="start">
             <Heading size="md" mb="4">
               Guests
@@ -62,25 +61,31 @@ export default function EventDetailPage() {
             </AppLinkButton>
           </HStack>
 
-          <Grid
-            gridTemplateColumns={{ base: 'auto', md: 'auto 1fr' }}
-            gap="2"
-            alignItems="stretch"
-          >
-            {guests.map((guest) => {
+          <Box rounded="md" border="1px solid" borderColor="gray.200">
+            {guests.map((guest, idx) => {
               return (
-                <React.Fragment key={guest.id}>
-                  <HStack p="1">
+                <Flex
+                  key={guest.id}
+                  direction={{ base: 'column', md: 'row' }}
+                  gap={{ base: '0', md: '2' }}
+                  _hover={{ bg: 'gray.100' }}
+                  py="2"
+                  px="4"
+                  roundedTop={idx === 0 ? 'md' : undefined}
+                  roundedBottom={idx === guests.length - 1 ? 'md' : undefined}
+                  borderTop={idx === 0 ? '0' : '0.5px solid'}
+                  borderBottom={idx === guests.length - 1 ? '0' : '0.5px solid'}
+                  borderColor="gray.200"
+                >
+                  <HStack w={{ base: 'auto', md: '16rem' }} gap="4">
                     <Avatar size="sm" src={guest.lumaUser.avatarUrl}></Avatar>
-                    <Box maxW="12rem">
-                      <Text color="gray.600">
-                        {guest.lumaUser.name ?? 'Anonymous'}
-                      </Text>
+                    <Box>
+                      <Text>{guest.lumaUser.name ?? 'Anonymous'}</Text>
 
                       <Text
                         fontSize="xs"
-                        color="gray.400"
-                        wordBreak="break-word"
+                        color="gray.500"
+                        wordBreak="break-all"
                       >
                         <Linkify
                           options={{
@@ -95,11 +100,11 @@ export default function EventDetailPage() {
                   </HStack>
 
                   <Box
+                    flex="1"
                     fontSize="sm"
-                    color="gray.600"
+                    color="gray.500"
                     p="1"
-                    roundedRight="md"
-                    wordBreak="break-word"
+                    wordBreak="break-all"
                   >
                     <Linkify
                       options={{ defaultProtocol: 'https', target: '_blank' }}
@@ -107,10 +112,10 @@ export default function EventDetailPage() {
                       {guest.answers.demo}
                     </Linkify>
                   </Box>
-                </React.Fragment>
+                </Flex>
               )
             })}
-          </Grid>
+          </Box>
         </CardBody>
       </Card>
     </Stack>
