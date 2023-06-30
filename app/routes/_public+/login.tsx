@@ -1,6 +1,17 @@
-import { Alert, AlertIcon, Box, Center, Stack, Text } from '@chakra-ui/react'
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Heading,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import { json, type LoaderArgs } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useLocation } from '@remix-run/react'
 import { AppSignInButton } from '~/components/AppSignInButton'
 import { authenticator } from '~/services/auth.server'
 import { sessionStorage } from '~/services/session.server'
@@ -28,21 +39,37 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function LoginPage() {
   const { errorMessage } = useLoaderData<typeof loader>()
+  const location = useLocation()
+  const returnTo = new URLSearchParams(location.search).get('returnTo')
+
   return (
     <Center>
-      <Stack>
-        <AppSignInButton />
+      <Card>
+        <CardHeader>
+          <Heading size="md">サインイン</Heading>
+        </CardHeader>
+        <CardBody maxW="sm">
+          <Stack>
+            {returnTo && (
+              <Text>
+                このページを閲覧するには Discord
+                アカウントのサインインが必要です。
+              </Text>
+            )}
+            <AppSignInButton />
 
-        {errorMessage && (
-          <Alert variant="solid" rounded="md" status="error">
-            <AlertIcon />
-            <Box textAlign="left">
-              <Text fontWeight="bold">ログインできません</Text>
-              <Text>{errorMessage}</Text>
-            </Box>
-          </Alert>
-        )}
-      </Stack>
+            {errorMessage && (
+              <Alert variant="solid" rounded="md" status="error">
+                <AlertIcon />
+                <Box textAlign="left">
+                  <Text fontWeight="bold">ログインできません</Text>
+                  <Text>{errorMessage}</Text>
+                </Box>
+              </Alert>
+            )}
+          </Stack>
+        </CardBody>
+      </Card>
     </Center>
   )
 }
