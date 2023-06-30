@@ -18,7 +18,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     const slide = pres.addSlide()
 
     // Title
-    slide.addText(event.name, { x: 0.5, y: 0.5, fontSize: 12, color: 'a0a0a0' })
+    slide.addText(event.name, { x: 0.5, y: 0.5, fontSize: 20, color: 'a0a0a0' })
 
     // Avatar
     slide.addImage({
@@ -33,17 +33,17 @@ export const loader = async ({ params }: LoaderArgs) => {
       x: 2.1,
       y: 1.5,
       color: '363636',
-      fontSize: 24,
+      fontSize: 48,
     })
     // SNS
     slide.addText(guest.answers.sns ?? '', {
       x: 2.1,
-      y: 1.8,
+      y: 2.2,
       color: '727272',
-      fontSize: 12,
+      fontSize: 24,
     })
     // Demo
-    slide.addText(guest.answers.demo ?? '', { x: 1, y: 3.5, color: '363636' })
+    slide.addText(guest.answers.demo ?? '', { x: 1, y: 3.8, color: '363636' })
   }
 
   const blob = await pres.stream({ compression: true })
