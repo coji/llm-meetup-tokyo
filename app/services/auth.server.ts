@@ -73,5 +73,10 @@ const authenticator = new Authenticator<DiscordUser>(sessionStorage)
 authenticator.use(discordStrategy)
 export { authenticator }
 
-export const requireUser = (request: Request) =>
-  authenticator.isAuthenticated(request, { failureRedirect: '/login' })
+export const requireUser = (request: Request) => {
+  const url = new URL(request.url)
+  const returnTo = url.pathname + url.search
+  return authenticator.isAuthenticated(request, {
+    failureRedirect: `/login?returnTo=${returnTo}`,
+  })
+}

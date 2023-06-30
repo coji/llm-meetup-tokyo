@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Box, Center, Text } from '@chakra-ui/react'
+import { Alert, AlertIcon, Box, Center, Stack, Text } from '@chakra-ui/react'
 import { json, type LoaderArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { AppSignInButton } from '~/components/AppSignInButton'
@@ -30,17 +30,19 @@ export default function LoginPage() {
   const { errorMessage } = useLoaderData<typeof loader>()
   return (
     <Center>
-      <AppSignInButton />
+      <Stack>
+        <AppSignInButton />
 
-      {errorMessage && (
-        <Alert variant="solid" rounded="md" status="error">
-          <AlertIcon />
-          <Box textAlign="left">
-            <Text fontWeight="bold">ログインできません</Text>
-            <Text>{errorMessage}</Text>
-          </Box>
-        </Alert>
-      )}
+        {errorMessage && (
+          <Alert variant="solid" rounded="md" status="error">
+            <AlertIcon />
+            <Box textAlign="left">
+              <Text fontWeight="bold">ログインできません</Text>
+              <Text>{errorMessage}</Text>
+            </Box>
+          </Alert>
+        )}
+      </Stack>
     </Center>
   )
 }

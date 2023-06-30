@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from '@remix-run/node'
+import { createCookie, createCookieSessionStorage } from '@remix-run/node'
 import type { DiscordProfile } from 'remix-auth-discord'
 import invariant from 'tiny-invariant'
 invariant(
@@ -23,6 +23,14 @@ export const sessionStorage = createCookieSessionStorage({
     secrets: [process.env.SESSION_SECRET],
     secure: process.env.NODE_ENV === 'production',
   },
+})
+
+export const returnToCookie = createCookie('return-to', {
+  httpOnly: true,
+  path: '/',
+  sameSite: 'lax',
+  maxAge: 60, // 1 minute because it makes no sense to keep it for a long time
+  secure: process.env.NODE_ENV === 'production',
 })
 
 export const getSession = async (request: Request) => {
