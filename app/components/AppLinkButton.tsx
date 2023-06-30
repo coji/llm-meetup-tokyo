@@ -1,4 +1,3 @@
-import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { Button, type ButtonProps } from '@chakra-ui/react'
 import { Link as RemixLink } from '@remix-run/react'
 
@@ -11,11 +10,11 @@ export const AppLinkButton = ({
   to,
   isExternal,
   children,
+  ...rest
 }: AppLinkButtonProps) => {
   if (isExternal) {
     return (
       <Button
-        rightIcon={<ExternalLinkIcon />}
         as="a"
         href={to}
         target="_blank"
@@ -25,6 +24,7 @@ export const AppLinkButton = ({
         onClick={(e) => {
           e.stopPropagation()
         }}
+        {...rest}
       >
         {children}
       </Button>
@@ -40,6 +40,7 @@ export const AppLinkButton = ({
         onClick={(e) => {
           e.stopPropagation()
         }}
+        {...rest}
       >
         {children}
       </Button>
