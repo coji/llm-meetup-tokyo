@@ -1,3 +1,4 @@
+import { DownloadIcon } from '@chakra-ui/icons'
 import {
   Avatar,
   Box,
@@ -6,6 +7,7 @@ import {
   Grid,
   HStack,
   Heading,
+  Spacer,
   Stack,
   Text,
 } from '@chakra-ui/react'
@@ -15,7 +17,7 @@ import React from 'react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
-import { AppBreadcrumbs } from '~/components'
+import { AppBreadcrumbs, AppLinkButton } from '~/components'
 import { EventCard } from '~/components/EventCard'
 import { getEventById, listEventGuests } from '~/models'
 
@@ -46,9 +48,20 @@ export default function EventDetailPage() {
 
       <Card>
         <CardBody>
-          <Heading size="md" mb="4">
-            Guests
-          </Heading>
+          <HStack align="start">
+            <Heading size="md" mb="4">
+              Guests
+            </Heading>
+            <Spacer />
+            <AppLinkButton
+              to={`/event/${event.id}/download`}
+              isExternal
+              rightIcon={<DownloadIcon />}
+            >
+              Download
+            </AppLinkButton>
+          </HStack>
+
           <Grid
             gridTemplateColumns={{ base: 'auto', md: 'auto 1fr' }}
             gap="2"
@@ -58,7 +71,7 @@ export default function EventDetailPage() {
               return (
                 <React.Fragment key={guest.id}>
                   <HStack p="1">
-                    <Avatar size="xs" src={guest.lumaUser.avatarUrl}></Avatar>
+                    <Avatar size="sm" src={guest.lumaUser.avatarUrl}></Avatar>
                     <Box maxW="12rem">
                       <Text color="gray.600">
                         {guest.lumaUser.name ?? 'Anonymous'}

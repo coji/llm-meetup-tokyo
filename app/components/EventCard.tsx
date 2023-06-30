@@ -49,7 +49,7 @@ export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
             alt={event.name}
           />
 
-          <Stack spacing="1">
+          <Stack spacing="2">
             {/* Heading */}
             <Box>
               <Text color="gray.600" fontSize="sm">
@@ -64,7 +64,7 @@ export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
             <Stack
               color="gray.600"
               fontSize="sm"
-              gap={{ base: '1', md: '4' }}
+              gap={{ base: '2', md: '4' }}
               direction={{ base: 'column', md: 'row' }}
             >
               <HStack>
@@ -93,8 +93,12 @@ export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
               </HStack>
             </Stack>
 
-            <HStack>
-              <AppLinkButton to={event.url} isExternal>
+            <HStack flexWrap="wrap">
+              <AppLinkButton
+                to={event.url}
+                isExternal
+                rightIcon={<ExternalLinkIcon />}
+              >
                 Luma Event Page
               </AppLinkButton>
               <AppLinkButton to={`/event/${event.id}/sync`}>Sync</AppLinkButton>
