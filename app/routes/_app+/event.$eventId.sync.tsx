@@ -14,7 +14,6 @@ import React from 'react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
-import { AppBreadcrumbs } from '~/components'
 import { runLumaCrawlJob } from '~/jobs/luma-crawl-job.server'
 import { getEventById, listLumaCrawlJobs } from '~/models'
 import dayjs from '~/utils/dayjs'
@@ -47,114 +46,100 @@ export default function EventSyncPage() {
 
   return (
     <Stack>
-      <AppBreadcrumbs
-        items={[
-          { label: 'Top', to: '/' },
-          { label: event.name, to: `/event/${event.id}` },
-          { label: 'Sync', isCurrentPage: true },
-        ]}
-      />
+      <Card>
+        <CardBody>
+          <Form method="POST">
+            <input type="hidden" name="url" value={event.url}></input>
+            <Button
+              w="full"
+              colorScheme="discord"
+              type="submit"
+              isLoading={navigation.state === 'submitting'}
+              isDisabled={navigation.state !== 'idle'}
+            >
+              {navigation.state === 'submitting' ? 'Syncing...' : 'Start Sync'}
+            </Button>
+          </Form>
+        </CardBody>
+      </Card>
 
-      <Stack>
-        <Card>
-          <CardBody>
-            <Form method="POST">
-              <input type="hidden" name="url" value={event.url}></input>
-              <Button
-                w="full"
-                colorScheme="discord"
-                type="submit"
-                isLoading={navigation.state === 'submitting'}
-                isDisabled={navigation.state !== 'idle'}
-              >
-                {navigation.state === 'submitting'
-                  ? 'Syncing...'
-                  : 'Start Sync'}
-              </Button>
-            </Form>
-          </CardBody>
-        </Card>
+      <Card>
+        <CardBody>
+          <Heading size="sm" mb="4">
+            Sync Logs
+          </Heading>
 
-        <Card>
-          <CardBody>
-            <Heading size="sm" mb="4">
-              Sync Logs
-            </Heading>
+          <Grid gridTemplateColumns="auto auto auto 1fr" gap="4">
+            <Box
+              fontSize="sm"
+              color="gray.500"
+              fontWeight="bold"
+              textAlign="center"
+              textTransform="uppercase"
+            >
+              CreatedAt
+            </Box>
+            <Box
+              fontSize="sm"
+              color="gray.500"
+              fontWeight="bold"
+              textAlign="center"
+              textTransform="uppercase"
+            >
+              Duration
+            </Box>
+            <Box
+              fontSize="sm"
+              color="gray.500"
+              fontWeight="bold"
+              textAlign="center"
+              textTransform="uppercase"
+            >
+              Status
+            </Box>
+            <Box
+              fontSize="sm"
+              color="gray.500"
+              fontWeight="bold"
+              textAlign="center"
+              textTransform="uppercase"
+            >
+              Log
+            </Box>
 
-            <Grid gridTemplateColumns="auto auto auto 1fr" gap="4">
-              <Box
-                fontSize="sm"
-                color="gray.500"
-                fontWeight="bold"
-                textAlign="center"
-                textTransform="uppercase"
-              >
-                CreatedAt
-              </Box>
-              <Box
-                fontSize="sm"
-                color="gray.500"
-                fontWeight="bold"
-                textAlign="center"
-                textTransform="uppercase"
-              >
-                Duration
-              </Box>
-              <Box
-                fontSize="sm"
-                color="gray.500"
-                fontWeight="bold"
-                textAlign="center"
-                textTransform="uppercase"
-              >
-                Status
-              </Box>
-              <Box
-                fontSize="sm"
-                color="gray.500"
-                fontWeight="bold"
-                textAlign="center"
-                textTransform="uppercase"
-              >
-                Log
-              </Box>
-
-              {jobs.map((job) => {
-                return (
-                  <React.Fragment key={job.id}>
-                    <Box>{dayjs(job.createdAt).format('YYYY-MM-DD HH:mm')}</Box>
-                    <Box>
-                      {dayjs
-                        .duration(
-                          dayjs(job.updatedAt).diff(dayjs(job.createdAt)),
-                        )
-                        .asSeconds()}{' '}
-                      seconds
-                    </Box>
-                    <Box>
-                      <Badge
-                        colorScheme={job.status === 'DONE' ? 'blue' : 'gray'}
-                      >
-                        {job.status}
-                      </Badge>
-                    </Box>
-                    <Box
-                      overflow="auto"
-                      fontSize="xs"
-                      bg="black"
-                      color="gray.200"
-                      rounded="md"
-                      p="4"
+            {jobs.map((job) => {
+              return (
+                <React.Fragment key={job.id}>
+                  <Box>{dayjs(job.createdAt).format('YYYY-MM-DD HH:mm')}</Box>
+                  <Box>
+                    {dayjs
+                      .duration(dayjs(job.updatedAt).diff(dayjs(job.createdAt)))
+                      .asSeconds()}{' '}
+                    seconds
+                  </Box>
+                  <Box>
+                    <Badge
+                      colorScheme={job.status === 'DONE' ? 'blue' : 'gray'}
                     >
-                      <pre>{JSON.stringify(job.logs, null, 2)}</pre>
-                    </Box>
-                  </React.Fragment>
-                )
-              })}
-            </Grid>
-          </CardBody>
-        </Card>
-      </Stack>
+                      {job.status}
+                    </Badge>
+                  </Box>
+                  <Box
+                    overflow="auto"
+                    fontSize="xs"
+                    bg="black"
+                    color="gray.200"
+                    rounded="md"
+                    p="4"
+                  >
+                    <pre>{JSON.stringify(job.logs, null, 2)}</pre>
+                  </Box>
+                </React.Fragment>
+              )
+            })}
+          </Grid>
+        </CardBody>
+      </Card>
     </Stack>
   )
 }

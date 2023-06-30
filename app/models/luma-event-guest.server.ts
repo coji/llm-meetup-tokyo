@@ -1,3 +1,4 @@
+import type { LumaEventGuest, LumaUser, Prisma } from '@prisma/client'
 import { prisma } from '~/services/database.server'
 import { type LumaApiGuest } from '~/services/luma.server'
 
@@ -51,6 +52,46 @@ export const upsertLumaEventGuests = async (guests: LumaApiGuest[]) => {
   }
 }
 
+/**
+ * 表示用に整形
+ * @param guest
+ * @returns
+ */
+const convertEventGuest = (guest: LumaEventGuest & { lumaUser: LumaUser }) => {
+  const { registrationAnswers, demo, ...rest } = guest
+  const answers = registrationAnswers as {
+    label: string
+    answer: string
+    question_id: string
+    question_type: string
+  }[]
+
+  return {
+    ...rest,
+    answers: {
+      fullName: answers.find(
+        (answer) => answer.label === '氏名 (ビル入館に必要: フルネーム)',
+      )?.answer,
+      company: answers.find(
+        (answer) =>
+          answer.label === '所属 (ビル入館に必要: 企業名またはフリーランス等)',
+      )?.answer,
+      demo: demo
+        ? demo
+        : answers.find(
+            (answer) =>
+              answer.label ===
+              '飛び入りデモでどのような内容をお話されたいか教えて下さい。',
+          )?.answer,
+      sns: answers.find(
+        (answer) =>
+          answer.label ===
+          'Twitter 等 SNSアカウントをお持ちでしたらお教え下さい。',
+      )?.answer,
+    },
+  }
+}
+
 export const listEventGuests = async (eventId: string) => {
   const eventGuests = await prisma.lumaEventGuest.findMany({
     where: { eventId, approvalStatus: 'approved' },
@@ -59,37 +100,24 @@ export const listEventGuests = async (eventId: string) => {
   })
 
   // 登録時アンケートを整形
-  return eventGuests.map((guest) => {
-    const { registrationAnswers, ...rest } = guest
-    const answers = registrationAnswers as {
-      label: string
-      answer: string
-      question_id: string
-      question_type: string
-    }[]
+  return eventGuests.map((guest) => convertEventGuest(guest))
+}
 
-    return {
-      ...rest,
-      answers: {
-        fullName: answers.find(
-          (answer) => answer.label === '氏名 (ビル入館に必要: フルネーム)',
-        )?.answer,
-        company: answers.find(
-          (answer) =>
-            answer.label ===
-            '所属 (ビル入館に必要: 企業名またはフリーランス等)',
-        )?.answer,
-        demo: answers.find(
-          (answer) =>
-            answer.label ===
-            '飛び入りデモでどのような内容をお話されたいか教えて下さい。',
-        )?.answer,
-        sns: answers.find(
-          (answer) =>
-            answer.label ===
-            'Twitter 等 SNSアカウントをお持ちでしたらお教え下さい。',
-        )?.answer,
-      },
-    }
+export const getEventGuestById = async (id: string) => {
+  return convertEventGuest(
+    await prisma.lumaEventGuest.findUniqueOrThrow({
+      where: { id },
+      include: { lumaUser: true },
+    }),
+  )
+}
+
+export const updateEventGuest = async (
+  id: string,
+  data: Prisma.LumaEventGuestUpdateInput,
+) => {
+  return prisma.lumaEventGuest.update({
+    where: { id },
+    data,
   })
 }
