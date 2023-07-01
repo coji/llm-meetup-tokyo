@@ -45,15 +45,15 @@ export default function LoginPage() {
   return (
     <Center>
       <Card>
-        <CardHeader>
+        <CardHeader pb="0">
           <Heading size="md">サインイン</Heading>
         </CardHeader>
         <CardBody maxW="sm">
           <Stack>
             {returnTo && (
               <Text>
-                このページを閲覧するには Discord
-                アカウントのサインインが必要です。
+                このページを閲覧するには LLM Meetup Tokyo サーバに参加している
+                Discord アカウントのサインインが必要です。
               </Text>
             )}
             <AppSignInButton />
