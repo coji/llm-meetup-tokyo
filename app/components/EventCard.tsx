@@ -43,7 +43,7 @@ export const EventCard = ({
   const navigate = useNavigate()
   return (
     <Card
-      _hover={{ cursor: to ? 'pointer' : 'default' }}
+      _hover={{ cursor: to ? 'pointer' : 'default', bg: 'gray.50' }}
       onClick={() => {
         if (to) {
           navigate(to)
@@ -84,7 +84,7 @@ export const EventCard = ({
                     py={0}
                     transition="all 0.2s"
                     borderRadius="md"
-                    color="gray.600"
+                    color="gray.400"
                     _hover={{ bg: 'gray.600', color: 'white' }}
                     _expanded={{ bg: 'gray.600', color: 'white' }}
                     _focus={{ boxShadow: 'outline' }}

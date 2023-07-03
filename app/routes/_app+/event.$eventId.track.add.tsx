@@ -1,3 +1,3 @@
 export default function NewTrackPage() {
-  return <div>new track</div>
+  return <div>add a demo track</div>
 }
