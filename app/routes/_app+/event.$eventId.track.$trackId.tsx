@@ -7,11 +7,16 @@ import {
   Flex,
   HStack,
   Heading,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
   Stack,
   Text,
 } from '@chakra-ui/react'
 import type { LoaderArgs } from '@remix-run/node'
-import { Outlet, useNavigate } from '@remix-run/react'
+import { Outlet, Link as RemixLink, useNavigate } from '@remix-run/react'
 import Linkify from 'linkify-react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
@@ -60,9 +65,28 @@ export default function DemoTrackDetailPage() {
         zoomUrl="#"
         to={`/event/${eventId}/track/3`}
       >
-        <Button size="sm" onClick={(e) => e.stopPropagation()}>
-          Action
-        </Button>
+        <Menu>
+          <MenuButton>
+            <Button
+              size="sm"
+              _hover={{ color: 'white', bg: 'gray.600' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              Admin
+            </Button>
+          </MenuButton>
+          <MenuList>
+            <MenuItem>Next Presenter</MenuItem>
+            <MenuDivider />
+            <MenuItem
+              as={RemixLink}
+              to={`/event/${eventId}/track/${trackId}/edit`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              Edit
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </DemoTrackCard>
 
       <Card>

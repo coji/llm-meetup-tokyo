@@ -2,13 +2,12 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
   HStack,
-  Icon,
-  IconButton,
   Spacer,
   Stack,
   Text,
@@ -16,7 +15,6 @@ import {
 } from '@chakra-ui/react'
 import { useNavigate } from '@remix-run/react'
 import Linkify from 'linkify-react'
-import { SiZoom } from 'react-icons/si'
 
 interface DemoTrackPresenter {
   name: string
@@ -123,7 +121,7 @@ export const DemoTrackCard = ({
 
       <CardFooter borderTop="1px" borderColor="gray.200" justify="end" py="2">
         <HStack>
-          <IconButton
+          <Button
             as="a"
             href={zoomUrl}
             target="_blank"
@@ -133,8 +131,8 @@ export const DemoTrackCard = ({
             px="2"
             onClick={(e) => e.stopPropagation()}
           >
-            {<Icon as={SiZoom} boxSize="8" />}
-          </IconButton>
+            Join Zoom
+          </Button>
         </HStack>
 
         <Spacer />

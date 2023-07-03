@@ -32,10 +32,7 @@ export default function EventDetailPage() {
         event={event}
         key={event.id}
         to={`/event/${event.id}`}
-        menu={[
-          { label: 'Sync', to: `/event/${event.id}/sync` },
-          { label: 'Add Demo Track', to: `/event/${event.id}/track/new` },
-        ]}
+        menu={[{ label: 'Sync', to: `/event/${event.id}/sync` }]}
       ></EventCard>
 
       <Outlet />
