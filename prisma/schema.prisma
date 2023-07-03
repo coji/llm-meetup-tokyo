@@ -37,6 +37,7 @@ model LumaEvent {
   guestCount            Int // ゲスト数: 表示用
   lumaEventGuest        LumaEventGuest[]
   lumaCrawlJob          LumaCrawlJob[]
+  demoTrack             DemoTrack[]
 }
 
 model LumaUser {
@@ -60,7 +61,10 @@ model LumaEventGuest {
 
   updatedAt             DateTime
   createdAt             DateTime
-  LumaEventGuestEditLog LumaEventGuestDemoEditLog[]
+  lumaEventGuestEditLog LumaEventGuestDemoEditLog[]
+  presenterDemoTrack    DemoTrack[]                 @relation("PresenterGuest")
+  hostDemoTrack         DemoTrack[]                 @relation("HostGuest")
+  demoTrackPresenter    DemoTrackPresenter[]
 
   @@unique([eventId, userId])
 }
@@ -105,4 +109,30 @@ model Config {
   value     String
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
+}
+
+model DemoTrack {
+  id                 Int                  @id @default(autoincrement())
+  event              LumaEvent            @relation(fields: [eventId], references: [id])
+  eventId            String
+  currentPresenter   LumaEventGuest?      @relation("PresenterGuest", fields: [currentPresenterId], references: [id])
+  currentPresenterId String?
+  host               LumaEventGuest       @relation("HostGuest", fields: [hostId], references: [id])
+  hostId             String
+  title              String
+  state              String
+  zoomUrl            String?
+  updatedAt          DateTime             @updatedAt
+  createdAt          DateTime             @default(now())
+  presenter          DemoTrackPresenter[]
+}
+
+model DemoTrackPresenter {
+  id          Int            @id @default(autoincrement())
+  demoTrack   DemoTrack      @relation(fields: [demoTrackId], references: [id])
+  demoTrackId Int
+  presenter   LumaEventGuest @relation(fields: [presenterId], references: [id])
+  presenterId String
+  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime       @default(now())
 }

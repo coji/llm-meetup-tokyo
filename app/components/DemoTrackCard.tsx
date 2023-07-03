@@ -1,3 +1,4 @@
+import { SettingsIcon } from '@chakra-ui/icons'
 import {
   Avatar,
   Badge,
@@ -8,13 +9,23 @@ import {
   CardFooter,
   CardHeader,
   HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Spacer,
   Stack,
   Text,
   type CardProps,
 } from '@chakra-ui/react'
-import { useNavigate } from '@remix-run/react'
+import { Link as RemixLink, useNavigate } from '@remix-run/react'
 import Linkify from 'linkify-react'
+import { match } from 'ts-pattern'
+
+interface DemoTrackMenuItem {
+  label: string
+  to: string
+}
 
 interface DemoTrackPresenter {
   name: string
@@ -28,19 +39,15 @@ interface DemoTrackHost {
   avatarUrl: string
 }
 
-interface DemoTrackState {
-  label: string
-  color: string
-}
-
 interface DemoTrackCardProps extends CardProps {
   eventId: string
   trackId: number
   title: string
-  state?: DemoTrackState
+  state: string
   presenter: DemoTrackPresenter
   host: DemoTrackHost
-  zoomUrl: string
+  zoomUrl?: string
+  menu?: DemoTrackMenuItem[]
   to?: string
   children?: React.ReactNode
 }
@@ -52,14 +59,22 @@ export const DemoTrackCard = ({
   presenter,
   host,
   zoomUrl,
+  menu,
   to,
   children,
   ...rest
 }: DemoTrackCardProps) => {
   const navigate = useNavigate()
+  const stateColor = match(state)
+    .with('In Preparation', () => 'gray')
+    .with('On Live', () => 'red')
+    .with('Finished', () => 'gray')
+    .otherwise(() => 'gray')
+
   return (
     <Card
       minW="300px"
+      variant="outline"
       _hover={{ cursor: to ? 'pointer' : 'default', bg: 'gray.50' }}
       onClick={() => {
         if (to) {
@@ -74,12 +89,44 @@ export const DemoTrackCard = ({
             {title}
           </Text>
           <Spacer />
-          {state && (
-            <Box>
-              <Badge colorScheme={state.color} w="full" textAlign="center">
-                {state.label}
-              </Badge>
-            </Box>
+          <Box>
+            <Badge
+              colorScheme={stateColor}
+              w="full"
+              textAlign="center"
+              variant={'outline'}
+            >
+              {state}
+            </Badge>
+          </Box>
+          {menu && (
+            <Menu>
+              <MenuButton
+                px={2}
+                py={0}
+                transition="all 0.2s"
+                borderRadius="md"
+                color="gray.400"
+                _hover={{ bg: 'gray.600', color: 'white' }}
+                _expanded={{ bg: 'gray.600', color: 'white' }}
+                _focus={{ boxShadow: 'outline' }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <SettingsIcon h="3" w="3" />
+              </MenuButton>
+              <MenuList>
+                {menu.map((menuItem, idx) => (
+                  <MenuItem
+                    as={RemixLink}
+                    to={menuItem.to}
+                    key={idx}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {menuItem.label}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
           )}
         </HStack>
       </CardHeader>
@@ -130,6 +177,8 @@ export const DemoTrackCard = ({
             aria-label="zoom"
             px="2"
             onClick={(e) => e.stopPropagation()}
+            variant={zoomUrl ? 'solid' : 'outline'}
+            isDisabled={!zoomUrl}
           >
             Join Zoom
           </Button>
@@ -139,9 +188,15 @@ export const DemoTrackCard = ({
 
         <HStack color="gray.600" fontSize="xs">
           {children}
-          <Text>Hosted by</Text>
-          <Avatar size="xs" src={host.avatarUrl}></Avatar>
-          <Text>{host.name}</Text>
+          <Box>
+            <Text color="gray.400" textAlign="right">
+              Hosted by
+            </Text>
+            <HStack>
+              <Avatar size="xs" src={host.avatarUrl}></Avatar>
+              <Text noOfLines={1}>{host.name}</Text>
+            </HStack>
+          </Box>
         </HStack>
       </CardFooter>
     </Card>

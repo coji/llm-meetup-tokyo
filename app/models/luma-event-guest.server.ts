@@ -57,7 +57,9 @@ export const upsertLumaEventGuests = async (guests: LumaApiGuest[]) => {
  * @param guest
  * @returns
  */
-const convertEventGuest = (guest: LumaEventGuest & { lumaUser: LumaUser }) => {
+export const convertEventGuest = (
+  guest: LumaEventGuest & { lumaUser: LumaUser },
+) => {
   const { registrationAnswers, demo, ...rest } = guest
   const answers = registrationAnswers as {
     label: string

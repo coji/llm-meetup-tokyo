@@ -19,7 +19,7 @@ import { z } from 'zod'
 import { zx } from 'zodix'
 import { AppLinkButton } from '~/components'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
-import { listEventGuests } from '~/models'
+import { listEventDemoTracks, listEventGuests } from '~/models'
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId } = zx.parseParams(params, {
@@ -27,12 +27,13 @@ export const loader = async ({ params }: LoaderArgs) => {
   })
 
   const guests = await listEventGuests(eventId)
+  const demoTracks = await listEventDemoTracks(eventId)
 
-  return typedjson({ eventId, guests })
+  return typedjson({ eventId, guests, demoTracks })
 }
 
 export default function EventDetailPage() {
-  const { eventId, guests } = useTypedLoaderData<typeof loader>()
+  const { eventId, guests, demoTracks } = useTypedLoaderData<typeof loader>()
   const navigate = useNavigate()
 
   return (
@@ -46,7 +47,7 @@ export default function EventDetailPage() {
               </Heading>
               <Spacer />
               <AppLinkButton
-                to={`/event/${eventId}/track/add`}
+                to={`/event/${eventId}/guests/track/add`}
                 rightIcon={<AddIcon />}
               >
                 Add
@@ -54,77 +55,29 @@ export default function EventDetailPage() {
             </HStack>
 
             <Flex flexWrap="wrap" gap="4">
-              <DemoTrackCard
-                flex="1"
-                eventId={eventId}
-                trackId={1}
-                title="#1"
-                state={{
-                  label: 'In preparation',
-                  color: 'blue',
-                }}
-                presenter={{
-                  name: 'Anonymous',
-                  avatarUrl: 'https://cdn.lu.ma/avatars-default/avatar_17.png',
-                  demo: '登壇 #3',
-                }}
-                host={{
-                  name: 'Yuto',
-                  avatarUrl: 'https://cdn.lu.ma/avatars-default/avatar_33.png',
-                }}
-                zoomUrl="#"
-                to={`/event/${eventId}/track/1`}
-              />
-
-              <DemoTrackCard
-                flex="1"
-                eventId={eventId}
-                trackId={2}
-                title="#2"
-                state={{
-                  label: 'Finished',
-                  color: 'gray',
-                }}
-                presenter={{
-                  name: 'George yoshida',
-                  avatarUrl:
-                    'https://images.lumacdn.com/avatars/1q/f591af4d-2e1d-4cc1-8921-26491532bd5c',
-                  sns: 'https://twitter.com/geeorgey',
-                  demo: '自作SlackアプリでSalesforce連携を模索している話',
-                }}
-                host={{
-                  name: 'neonankiti',
-                  avatarUrl:
-                    'https://images.lumacdn.com/avatars/oy/88374f65-e6e0-417d-bd2c-cfee1f6f3f4d',
-                }}
-                zoomUrl="#"
-                to={`/event/${eventId}/track/2`}
-              />
-
-              <DemoTrackCard
-                flex="1"
-                eventId={eventId}
-                trackId={3}
-                title="#3"
-                state={{
-                  label: 'On Live',
-                  color: 'red',
-                }}
-                presenter={{
-                  name: 'Ryoichi Takahashi（Dory）',
-                  avatarUrl:
-                    'https://images.lumacdn.com/avatars/qx/54851b63-5b8b-4bf4-afb0-f2b8fb9ca6a0',
-                  sns: 'https://twitter.com/dory111111',
-                  demo: '自作のAI AgentフレームワークのMemoryの仕組みについてデモします！',
-                }}
-                host={{
-                  name: 'coji',
-                  avatarUrl:
-                    'https://images.lumacdn.com/avatars/zv/82b8cc3e-8d10-4b70-8b79-d5ffcc559cb8',
-                }}
-                zoomUrl="#"
-                to={`/event/${eventId}/track/3`}
-              />
+              {demoTracks.map((demoTrack) => (
+                <DemoTrackCard
+                  key={demoTrack.id}
+                  flex="1"
+                  eventId={eventId}
+                  trackId={demoTrack.id}
+                  title={demoTrack.title}
+                  state={demoTrack.state}
+                  presenter={{
+                    name:
+                      demoTrack.currentPresenter?.lumaUser.name ?? 'Anonymous',
+                    avatarUrl:
+                      demoTrack.currentPresenter?.lumaUser.avatarUrl ?? '',
+                    demo: demoTrack.currentPresenter?.answers.demo,
+                  }}
+                  host={{
+                    name: demoTrack.host.lumaUser.name ?? 'Anonymous',
+                    avatarUrl: demoTrack.host.lumaUser.avatarUrl,
+                  }}
+                  zoomUrl={demoTrack.zoomUrl ?? undefined}
+                  to={`/event/${eventId}/track/${demoTrack.id}`}
+                />
+              ))}
             </Flex>
           </Stack>
         </CardBody>

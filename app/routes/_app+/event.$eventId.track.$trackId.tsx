@@ -1,28 +1,11 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardBody,
-  Flex,
-  HStack,
-  Heading,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { Button, Stack } from '@chakra-ui/react'
 import type { LoaderArgs } from '@remix-run/node'
-import { Outlet, Link as RemixLink, useNavigate } from '@remix-run/react'
-import Linkify from 'linkify-react'
+import { Outlet, Link as RemixLink } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
-import { listEventGuests } from '~/models'
+import { getEventDemoTrack } from '~/models'
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId, trackId } = zx.parseParams(params, {
@@ -30,135 +13,54 @@ export const loader = async ({ params }: LoaderArgs) => {
     trackId: zx.NumAsString,
   })
 
-  const guests = await listEventGuests(eventId)
+  const demoTrack = await getEventDemoTrack(trackId)
 
-  return typedjson({ eventId, trackId, guests })
+  return typedjson({ eventId, trackId, demoTrack })
 }
 
 export default function DemoTrackDetailPage() {
-  const { eventId, trackId, guests } = useTypedLoaderData<typeof loader>()
-  const navigate = useNavigate()
+  const { eventId, trackId, demoTrack } = useTypedLoaderData<typeof loader>()
 
   return (
     <Stack>
       <DemoTrackCard
         flex="1"
         eventId={eventId}
-        trackId={trackId}
-        title="#3"
-        state={{
-          label: 'On Live',
-          color: 'red',
-        }}
+        trackId={demoTrack.id}
+        title={demoTrack.title}
+        state={demoTrack.state}
         presenter={{
-          name: 'Ryoichi Takahashi（Dory）',
-          avatarUrl:
-            'https://images.lumacdn.com/avatars/qx/54851b63-5b8b-4bf4-afb0-f2b8fb9ca6a0',
-          sns: 'https://twitter.com/dory111111',
-          demo: '自作のAI AgentフレームワークのMemoryの仕組みについてデモします！',
+          name: demoTrack.currentPresenter?.lumaUser.name || '',
+          avatarUrl: demoTrack.currentPresenter?.lumaUser.avatarUrl || '',
+          sns: demoTrack.currentPresenter?.answers.sns,
+          demo: demoTrack.currentPresenter?.answers.demo,
         }}
         host={{
-          name: 'coji',
-          avatarUrl:
-            'https://images.lumacdn.com/avatars/zv/82b8cc3e-8d10-4b70-8b79-d5ffcc559cb8',
+          name: demoTrack.host.lumaUser.name ?? 'Anonymous',
+          avatarUrl: demoTrack.host.lumaUser.avatarUrl,
         }}
-        zoomUrl="#"
-        to={`/event/${eventId}/track/3`}
+        zoomUrl={demoTrack.zoomUrl ?? ''}
+        menu={[
+          { label: 'Edit', to: `/event/${eventId}/track/${demoTrack.id}/edit` },
+          {
+            label: 'Delete',
+            to: `/event/${eventId}/track/${demoTrack.id}/delete`,
+          },
+        ]}
+        to={`/event/${eventId}/track/${demoTrack.id}`}
       >
-        <Menu>
-          <MenuButton>
-            <Button
-              size="sm"
-              _hover={{ color: 'white', bg: 'gray.600' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              Admin
-            </Button>
-          </MenuButton>
-          <MenuList>
-            <MenuItem>Next Presenter</MenuItem>
-            <MenuDivider />
-            <MenuItem
-              as={RemixLink}
-              to={`/event/${eventId}/track/${trackId}/edit`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              Edit
-            </MenuItem>
-          </MenuList>
-        </Menu>
+        <Button
+          size="sm"
+          as={RemixLink}
+          to={`/event/${eventId}/track/${trackId}/next`}
+          colorScheme="pink"
+          onClick={(e) => e.stopPropagation()}
+        >
+          Next Presenter
+        </Button>
       </DemoTrackCard>
 
-      <Card>
-        <CardBody px="4">
-          <HStack align="start">
-            <Heading size="md" mb="4">
-              Presenters
-            </Heading>
-          </HStack>
-          <Box rounded="md" border="1px solid" borderColor="gray.200">
-            {guests.map((guest, idx) => {
-              return (
-                <Flex
-                  key={guest.id}
-                  direction={{ base: 'column', md: 'row' }}
-                  gap={{ base: '0', md: '2' }}
-                  _hover={{ bg: 'gray.100', cursor: 'pointer' }}
-                  py="2"
-                  px="4"
-                  roundedTop={idx === 0 ? 'md' : undefined}
-                  roundedBottom={idx === guests.length - 1 ? 'md' : undefined}
-                  borderTop={idx === 0 ? '0' : '0.5px solid'}
-                  borderBottom={idx === guests.length - 1 ? '0' : '0.5px solid'}
-                  borderColor="gray.200"
-                  onClick={() => {
-                    navigate(`${guest.id}`, {
-                      preventScrollReset: true,
-                    })
-                  }}
-                >
-                  <HStack w={{ base: 'auto', md: '16rem' }} gap="4">
-                    <Avatar size="sm" src={guest.lumaUser.avatarUrl}></Avatar>
-                    <Box>
-                      <Text>{guest.lumaUser.name ?? 'Anonymous'}</Text>
-
-                      <Text
-                        fontSize="xs"
-                        color="gray.500"
-                        wordBreak="break-all"
-                      >
-                        <Linkify
-                          options={{
-                            defaultProtocol: 'https',
-                            target: '_blank',
-                          }}
-                        >
-                          {guest.answers.sns}
-                        </Linkify>
-                      </Text>
-                    </Box>
-                  </HStack>
-
-                  <Box
-                    flex="1"
-                    fontSize="sm"
-                    color="gray.500"
-                    p="1"
-                    wordBreak="break-all"
-                  >
-                    <Linkify
-                      options={{ defaultProtocol: 'https', target: '_blank' }}
-                    >
-                      {guest.answers.demo}
-                    </Linkify>
-                  </Box>
-                </Flex>
-              )
-            })}
-          </Box>
-          <Outlet />
-        </CardBody>
-      </Card>
+      <Outlet />
     </Stack>
   )
 }
