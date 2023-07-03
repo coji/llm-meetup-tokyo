@@ -59,7 +59,7 @@ export default function TestPage() {
   const { messageLog } = useLoaderData<typeof loader>()
 
   useEffect(() => {
-    if (navigation.state === 'idle') {
+    if (navigation.state === 'idle' && !!messageRef.current?.value) {
       messageRef.current?.focus()
       formRef.current?.reset()
     }
