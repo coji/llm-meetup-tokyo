@@ -28,7 +28,15 @@ export default function EventDetailPage() {
         ]}
       />
 
-      <EventCard event={event} key={event.id} />
+      <EventCard
+        event={event}
+        key={event.id}
+        to={`/event/${event.id}`}
+        menu={[
+          { label: 'Sync', to: `/event/${event.id}/sync` },
+          { label: 'Add Demo Track', to: `/event/${event.id}/track/new` },
+        ]}
+      ></EventCard>
 
       <Outlet />
     </Stack>
