@@ -47,7 +47,7 @@ export default function EventImportPage() {
             <Stack>
               <FormControl>
                 <FormLabel>URL</FormLabel>
-                <Input type="text" name="url" />
+                <Input type="text" name="url" defaultValue="https://lu.ma/" />
                 <FormErrorMessage></FormErrorMessage>
               </FormControl>
 
