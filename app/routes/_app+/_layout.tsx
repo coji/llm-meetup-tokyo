@@ -5,6 +5,12 @@ import { AppBreadcrumbs, AppFooter, AppHeader } from '~/components'
 import { useAppBreadcrumbs } from '~/hooks/use-app-breadcrumbs'
 import { requireUser } from '~/services/auth.server'
 
+export const handle = {
+  breadcrumb: () => ({
+    label: 'Top',
+    to: `/`,
+  }),
+}
 export const loader = async ({ request }: LoaderArgs) => {
   await requireUser(request)
   return json({})
