@@ -9,7 +9,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   console.log({ returnTo })
 
   try {
-    return await authenticator.authenticate(
+    return authenticator.authenticate(
       'discord',
       buildForwardedRequest(request),
       {

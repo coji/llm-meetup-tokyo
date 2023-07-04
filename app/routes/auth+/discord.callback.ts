@@ -10,12 +10,8 @@ export const loader = async ({ request }: LoaderArgs) => {
       | string
       | null) ?? '/'
 
-  return await authenticator.authenticate(
-    'discord',
-    buildForwardedRequest(request),
-    {
-      successRedirect: returnTo,
-      failureRedirect: '/login',
-    },
-  )
+  return authenticator.authenticate('discord', buildForwardedRequest(request), {
+    successRedirect: returnTo,
+    failureRedirect: '/login',
+  })
 }
