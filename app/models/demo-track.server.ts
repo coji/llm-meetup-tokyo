@@ -14,7 +14,7 @@ export const listEventDemoTracks = async (eventId: LumaEvent['id']) => {
       currentPresenter: { include: { lumaUser: true } },
       host: { include: { lumaUser: true } },
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy: { title: 'asc' },
   })
 
   return demoTracks.map((demoTrack) => {
