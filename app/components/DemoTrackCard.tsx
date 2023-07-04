@@ -124,12 +124,7 @@ export const DemoTrackCard = ({
             </Menu>
           )}
           <Box>
-            <Badge
-              colorScheme={stateColor}
-              w="full"
-              textAlign="center"
-              variant="solid"
-            >
+            <Badge colorScheme={stateColor} w="full" textAlign="center">
               {state}
             </Badge>
           </Box>
