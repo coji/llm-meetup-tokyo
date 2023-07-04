@@ -98,7 +98,7 @@ export const listEventGuests = async (eventId: string) => {
   const eventGuests = await prisma.lumaEventGuest.findMany({
     where: { eventId, approvalStatus: 'approved' },
     include: { lumaUser: true },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ createdAt: 'desc' }, { lumaUser: { name: 'asc' } }],
   })
 
   // 登録時アンケートを整形
