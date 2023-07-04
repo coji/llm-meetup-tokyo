@@ -66,7 +66,7 @@ export const DemoTrackCard = ({
 }: DemoTrackCardProps) => {
   const navigate = useNavigate()
   const stateColor = match(state)
-    .with('In Preparation', () => 'gray')
+    .with('In Preparation', () => 'blue')
     .with('On Live', () => 'red')
     .with('Finished', () => 'gray')
     .otherwise(() => 'gray')
@@ -75,7 +75,10 @@ export const DemoTrackCard = ({
     <Card
       minW="300px"
       variant="outline"
-      _hover={{ cursor: to ? 'pointer' : 'default', bg: 'gray.50' }}
+      _hover={{
+        cursor: to ? 'pointer' : 'default',
+        bg: to ? 'gray.50' : 'default',
+      }}
       onClick={() => {
         if (to) {
           navigate(to)
@@ -89,16 +92,7 @@ export const DemoTrackCard = ({
             {title}
           </Text>
           <Spacer />
-          <Box>
-            <Badge
-              colorScheme={stateColor}
-              w="full"
-              textAlign="center"
-              variant={'outline'}
-            >
-              {state}
-            </Badge>
-          </Box>
+
           {menu && (
             <Menu>
               <MenuButton
@@ -128,11 +122,22 @@ export const DemoTrackCard = ({
               </MenuList>
             </Menu>
           )}
+          <Box>
+            <Badge
+              colorScheme={stateColor}
+              w="full"
+              textAlign="center"
+              variant="solid"
+            >
+              {state}
+            </Badge>
+          </Box>
         </HStack>
       </CardHeader>
+
       <CardBody pt="2">
         <Stack>
-          <HStack>
+          <HStack align="start">
             <Avatar size="lg" src={presenter.avatarUrl} />
             <Box>
               <Text wordBreak="break-word">{presenter.name}</Text>
@@ -151,6 +156,8 @@ export const DemoTrackCard = ({
                 </Linkify>
               </Text>
             </Box>
+            <Spacer />
+            {children}
           </HStack>
 
           <Text
@@ -172,11 +179,15 @@ export const DemoTrackCard = ({
             as="a"
             href={zoomUrl}
             target="_blank"
-            size="sm"
             colorScheme="blue"
             aria-label="zoom"
             px="2"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation()
+              if (!zoomUrl) {
+                e.preventDefault()
+              }
+            }}
             variant={zoomUrl ? 'solid' : 'outline'}
             isDisabled={!zoomUrl}
           >
@@ -187,7 +198,6 @@ export const DemoTrackCard = ({
         <Spacer />
 
         <HStack color="gray.600" fontSize="xs">
-          {children}
           <Box>
             <Text color="gray.400" textAlign="right">
               Hosted by

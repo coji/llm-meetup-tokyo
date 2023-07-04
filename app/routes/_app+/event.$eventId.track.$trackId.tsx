@@ -1,11 +1,24 @@
-import { Button, Stack } from '@chakra-ui/react'
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardBody,
+  Flex,
+  HStack,
+  Heading,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import type { LoaderArgs } from '@remix-run/node'
-import { Outlet, Link as RemixLink } from '@remix-run/react'
+import { Outlet, Link as RemixLink, useNavigate } from '@remix-run/react'
+import Linkify from 'linkify-react'
+import { GiPlayerNext } from 'react-icons/gi'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
-import { getEventDemoTrack } from '~/models'
+import { getEventDemoTrack, listEventGuests } from '~/models'
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId, trackId } = zx.parseParams(params, {
@@ -14,12 +27,15 @@ export const loader = async ({ params }: LoaderArgs) => {
   })
 
   const demoTrack = await getEventDemoTrack(trackId)
+  const presenters = await listEventGuests(eventId)
 
-  return typedjson({ eventId, trackId, demoTrack })
+  return typedjson({ eventId, trackId, demoTrack, presenters })
 }
 
 export default function DemoTrackDetailPage() {
-  const { eventId, trackId, demoTrack } = useTypedLoaderData<typeof loader>()
+  const { eventId, trackId, demoTrack, presenters } =
+    useTypedLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
     <Stack>
@@ -47,18 +63,96 @@ export default function DemoTrackDetailPage() {
             to: `/event/${eventId}/track/${demoTrack.id}/delete`,
           },
         ]}
-        to={`/event/${eventId}/track/${demoTrack.id}`}
       >
-        <Button
-          size="sm"
-          as={RemixLink}
-          to={`/event/${eventId}/track/${trackId}/next`}
-          colorScheme="pink"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Next Presenter
-        </Button>
+        {demoTrack.state !== 'finished' && (
+          <Button
+            as={RemixLink}
+            to={`/event/${eventId}/track/${trackId}/next`}
+            colorScheme="pink"
+            rightIcon={<GiPlayerNext />}
+            onClick={(e) => e.stopPropagation()}
+          >
+            Go Next
+          </Button>
+        )}
       </DemoTrackCard>
+
+      <Card>
+        <CardBody px="4">
+          <HStack align="start">
+            <Heading size="md" mb="4">
+              Presenters
+            </Heading>
+          </HStack>
+          <Box rounded="md" border="1px solid" borderColor="gray.200">
+            {presenters.map((presenter, idx) => {
+              return (
+                <Flex
+                  key={presenter.id}
+                  direction={{ base: 'column', md: 'row' }}
+                  gap={{ base: '0', md: '2' }}
+                  _hover={{ bg: 'gray.100', cursor: 'pointer' }}
+                  py="2"
+                  px="4"
+                  roundedTop={idx === 0 ? 'md' : undefined}
+                  roundedBottom={
+                    idx === presenters.length - 1 ? 'md' : undefined
+                  }
+                  borderTop={idx === 0 ? '0' : '0.5px solid'}
+                  borderBottom={
+                    idx === presenters.length - 1 ? '0' : '0.5px solid'
+                  }
+                  borderColor="gray.200"
+                  onClick={() => {
+                    navigate(`presenter/${presenter.id}`, {
+                      preventScrollReset: true,
+                    })
+                  }}
+                >
+                  <HStack w={{ base: 'auto', md: '16rem' }} gap="4">
+                    <Avatar
+                      size="sm"
+                      src={presenter.lumaUser.avatarUrl}
+                    ></Avatar>
+                    <Box>
+                      <Text>{presenter.lumaUser.name ?? 'Anonymous'}</Text>
+
+                      <Text
+                        fontSize="xs"
+                        color="gray.500"
+                        wordBreak="break-all"
+                      >
+                        <Linkify
+                          options={{
+                            defaultProtocol: 'https',
+                            target: '_blank',
+                          }}
+                        >
+                          {presenter.answers.sns}
+                        </Linkify>
+                      </Text>
+                    </Box>
+                  </HStack>
+
+                  <Box
+                    flex="1"
+                    fontSize="sm"
+                    color="gray.500"
+                    p="1"
+                    wordBreak="break-all"
+                  >
+                    <Linkify
+                      options={{ defaultProtocol: 'https', target: '_blank' }}
+                    >
+                      {presenter.answers.demo}
+                    </Linkify>
+                  </Box>
+                </Flex>
+              )
+            })}
+          </Box>
+        </CardBody>
+      </Card>
 
       <Outlet />
     </Stack>

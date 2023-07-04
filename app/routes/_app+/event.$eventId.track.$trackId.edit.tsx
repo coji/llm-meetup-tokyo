@@ -23,32 +23,22 @@ import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { getEventDemoTrack, listEventGuests, updateDemoTrack } from '~/models'
+import { demoTrackSchema } from '~/schemas/model'
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId, trackId } = zx.parseParams(params, {
     eventId: z.string(),
     trackId: zx.NumAsString,
   })
-
   const demoTrack = await getEventDemoTrack(trackId)
   const guests = await listEventGuests(eventId)
   return typedjson({ eventId, trackId, demoTrack, guests })
 }
 
 export const action = async ({ params, request }: ActionArgs) => {
-  const { trackId } = zx.parseParams(params, {
-    trackId: zx.NumAsString,
-  })
-
-  const formData = await zx.parseForm(request, {
-    title: z.string().min(1).max(100),
-    hostId: z.string().nonempty(),
-    zoomUrl: z.string().url().optional(),
-    state: z.enum(['In Preparation', 'On Live', 'Finished']),
-  })
-
+  const { trackId } = zx.parseParams(params, { trackId: zx.NumAsString })
+  const formData = await zx.parseForm(request, demoTrackSchema)
   await updateDemoTrack(trackId, formData)
-
   return redirect('..')
 }
 
