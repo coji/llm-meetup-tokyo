@@ -23,6 +23,7 @@ import { z } from 'zod'
 import { zx } from 'zodix'
 import { getEventDemoTrack, listEventGuests, updateDemoTrack } from '~/models'
 import { demoTrackSchema } from '~/schemas/model'
+import { emitter } from '~/services/emitter.server'
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId, trackId } = zx.parseParams(params, {
@@ -35,9 +36,14 @@ export const loader = async ({ params }: LoaderArgs) => {
 }
 
 export const action = async ({ params, request }: ActionArgs) => {
-  const { trackId } = zx.parseParams(params, { trackId: zx.NumAsString })
+  const { eventId, trackId } = zx.parseParams(params, {
+    eventId: z.string(),
+    trackId: zx.NumAsString,
+  })
   const formData = await zx.parseForm(request, demoTrackSchema)
   await updateDemoTrack(trackId, formData)
+  emitter.emit('event', eventId) // イベント更新をリアルタイム通知
+
   return redirect('..')
 }
 

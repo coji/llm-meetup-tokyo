@@ -15,6 +15,7 @@ import { redirect } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { deleteDemoTrack } from '~/models'
+import { emitter } from '~/services/emitter.server'
 
 export const action = async ({ params }: ActionArgs) => {
   const { eventId, trackId } = zx.parseParams(params, {
@@ -22,6 +23,7 @@ export const action = async ({ params }: ActionArgs) => {
     trackId: zx.NumAsString,
   })
   await deleteDemoTrack(trackId)
+  emitter.emit('event', eventId) // イベント更新をリアルタイム通知
   return redirect(`/event/${eventId}`)
 }
 

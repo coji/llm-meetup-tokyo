@@ -16,6 +16,7 @@ import { z } from 'zod'
 import { zx } from 'zodix'
 import { runLumaCrawlJob } from '~/jobs/luma-crawl-job.server'
 import { getEventById, listLumaCrawlJobs } from '~/models'
+import { emitter } from '~/services/emitter.server'
 import dayjs from '~/utils/dayjs'
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -29,13 +30,17 @@ export const loader = async ({ params }: LoaderArgs) => {
   return typedjson({ event, jobs })
 }
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ params, request }: ActionArgs) => {
+  const { eventId } = zx.parseParams(params, {
+    eventId: z.string(),
+  })
   const { url } = await zx.parseForm(request, {
     url: z.string(),
   })
 
   // 同期的にクロール
   await runLumaCrawlJob(url)
+  emitter.emit('event', eventId) // イベント更新をリアルタイム通知
 
   return typedjson({})
 }

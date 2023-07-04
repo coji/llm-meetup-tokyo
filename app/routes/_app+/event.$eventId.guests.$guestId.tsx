@@ -28,6 +28,7 @@ import {
   updateEventGuest,
 } from '~/models'
 import { requireUser } from '~/services/auth.server'
+import { emitter } from '~/services/emitter.server'
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const { guestId } = zx.parseParams(params, {
@@ -41,7 +42,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export const action = async ({ request, params }: ActionArgs) => {
   const user = await requireUser(request)
-  const { guestId } = zx.parseParams(params, {
+  const { eventId, guestId } = zx.parseParams(params, {
+    eventId: z.string(),
     guestId: z.string(),
   })
 
@@ -62,6 +64,7 @@ export const action = async ({ request, params }: ActionArgs) => {
     oldValue: guest.answers.demo,
     newValue: demo,
   })
+  emitter.emit('event', eventId) // イベント更新をリアルタイム通知
 
   return redirect('..')
 }

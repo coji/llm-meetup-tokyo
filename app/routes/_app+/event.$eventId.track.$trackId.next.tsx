@@ -29,6 +29,7 @@ import {
   searchEventGuests,
   setDemoTrackCurrentPresenter,
 } from '~/models'
+import { emitter } from '~/services/emitter.server'
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const { eventId, trackId } = zx.parseParams(params, {
@@ -45,7 +46,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 }
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const { trackId } = zx.parseParams(params, {
+  const { eventId, trackId } = zx.parseParams(params, {
     eventId: z.string(),
     trackId: zx.NumAsString,
   })
@@ -55,6 +56,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   })
   const demoTrack = await getEventDemoTrack(trackId)
   await setDemoTrackCurrentPresenter(demoTrack.id, presenterId)
+  emitter.emit('event', eventId) // イベント更新をリアルタイム通知
 
   return redirect('..')
 }

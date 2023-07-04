@@ -19,6 +19,7 @@ import { z } from 'zod'
 import { zx } from 'zodix'
 import { AppLinkButton } from '~/components'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
+import { useEventUpdater } from '~/hooks/use-event-updater'
 import { listEventDemoTracks, listEventGuests } from '~/models'
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -35,6 +36,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 export default function EventDetailPage() {
   const { eventId, guests, demoTracks } = useTypedLoaderData<typeof loader>()
   const navigate = useNavigate()
+  useEventUpdater() // イベント関連情報が更新されたら自動でデータを読み直す
 
   return (
     <Stack>
