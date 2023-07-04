@@ -112,7 +112,7 @@ export default function DemoTrackDetailPage() {
               {presenters.map((presenter, idx) => {
                 return (
                   <Flex
-                    key={presenter.id}
+                    key={`${idx}-${presenter.id}`}
                     direction={{ base: 'column', md: 'row' }}
                     gap={{ base: '0', md: '2' }}
                     _hover={{ bg: 'gray.100', cursor: 'pointer' }}
