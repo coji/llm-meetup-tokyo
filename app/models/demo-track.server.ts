@@ -1,8 +1,8 @@
-import type { Prisma } from '@prisma/client'
+import type { DemoTrack, LumaEvent, Prisma } from '@prisma/client'
 import { prisma } from '~/services/database.server'
 import { convertEventGuest } from './luma-event-guest.server'
 
-export const listEventDemoTracks = async (eventId: string) => {
+export const listEventDemoTracks = async (eventId: LumaEvent['id']) => {
   const demoTracks = await prisma.demoTrack.findMany({
     where: { eventId },
     include: {
@@ -24,7 +24,7 @@ export const listEventDemoTracks = async (eventId: string) => {
   })
 }
 
-export const getEventDemoTrack = async (id: number) => {
+export const getEventDemoTrack = async (id: DemoTrack['id']) => {
   const demoTrack = await prisma.demoTrack.findUniqueOrThrow({
     where: { id },
     include: {
@@ -53,4 +53,8 @@ export const createDemoTrack = async (
   data: Prisma.DemoTrackUncheckedCreateInput,
 ) => {
   await prisma.demoTrack.create({ data })
+}
+
+export const deleteDemoTrack = async (id: DemoTrack['id']) => {
+  await prisma.demoTrack.delete({ where: { id } })
 }

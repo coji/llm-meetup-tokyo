@@ -10,7 +10,21 @@ import {
   ModalOverlay,
   Spacer,
 } from '@chakra-ui/react'
+import type { ActionArgs } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'
+import { redirect } from 'remix-typedjson'
+import { z } from 'zod'
+import { zx } from 'zodix'
+import { deleteDemoTrack } from '~/models'
+
+export const action = async ({ params }: ActionArgs) => {
+  const { eventId, trackId } = zx.parseParams(params, {
+    eventId: z.string(),
+    trackId: zx.NumAsString,
+  })
+  await deleteDemoTrack(trackId)
+  return redirect(`/event/${eventId}`)
+}
 
 export default function TrackNextPresenterPage() {
   const navigate = useNavigate()
@@ -22,13 +36,17 @@ export default function TrackNextPresenterPage() {
     <Modal isOpen={true} onClose={handleOnClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Delete</ModalHeader>
+        <ModalHeader>Delete a Demo Track</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>削除します。よろしいですか？</ModalBody>
+        <ModalBody>Demo Track を削除します。よろしいですか？</ModalBody>
 
         <ModalFooter>
           <HStack>
-            <Button colorScheme="red">削除</Button>
+            <form method="POST">
+              <Button type="submit" colorScheme="red">
+                削除
+              </Button>
+            </form>
             <Spacer />
             <Button variant="ghost" onClick={handleOnClose}>
               Cancel
