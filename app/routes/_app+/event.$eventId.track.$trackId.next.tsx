@@ -2,6 +2,8 @@ import {
   Avatar,
   Box,
   Button,
+  FormControl,
+  FormLabel,
   HStack,
   Input,
   Modal,
@@ -13,10 +15,11 @@ import {
   ModalOverlay,
   Spacer,
   Stack,
+  Switch,
   Text,
 } from '@chakra-ui/react'
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
-import { Form, useNavigate, useSubmit } from '@remix-run/react'
+import { Form, useNavigate, useNavigation, useSubmit } from '@remix-run/react'
 import { useState } from 'react'
 import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
@@ -24,7 +27,7 @@ import { zx } from 'zodix'
 import {
   getEventDemoTrack,
   searchEventGuests,
-  setDemoTrackPresenter,
+  setDemoTrackCurrentPresenter,
 } from '~/models'
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -36,7 +39,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     search: z.string().optional(),
   })
   const search = query.success ? query.data.search : undefined
-
   const demoTrack = await getEventDemoTrack(trackId)
   const guests = await searchEventGuests(eventId, search)
   return typedjson({ demoTrack, search, guests })
@@ -47,11 +49,12 @@ export const action = async ({ request, params }: ActionArgs) => {
     eventId: z.string(),
     trackId: zx.NumAsString,
   })
-  const { presenterId } = await zx.parseForm(request, {
+  const { presenterId, isPushDiscord } = await zx.parseForm(request, {
     presenterId: z.string().min(1),
+    isPushDiscord: zx.BoolAsString,
   })
   const demoTrack = await getEventDemoTrack(trackId)
-  await setDemoTrackPresenter(demoTrack.id, presenterId)
+  await setDemoTrackCurrentPresenter(demoTrack.id, presenterId)
 
   return redirect('..')
 }
@@ -62,6 +65,7 @@ export default function TrackNextPresenterPage() {
     (typeof guests)[0] | undefined
   >()
   const submit = useSubmit()
+  const navigation = useNavigation()
   const navigate = useNavigate()
   const handleOnClose = () => {
     navigate('..')
@@ -72,30 +76,51 @@ export default function TrackNextPresenterPage() {
       <ModalContent>
         <ModalHeader>
           {demoTrack.currentPresenter
-            ? 'Set First Presenter'
-            : 'Set Next Presenter'}
+            ? 'Set Next Presenter'
+            : 'Set First Presenter'}
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Stack>
-            <HStack align="center" h="32px">
-              <Text fontSize="sm" color="gray.500" fontWeight="bold">
-                Selected
-              </Text>
-              {selectedGuest ? (
-                <>
-                  <Avatar
-                    size="sm"
-                    src={selectedGuest.lumaUser.avatarUrl}
-                  ></Avatar>
-                  <Text>{selectedGuest.lumaUser.name ?? 'Anonymous'}</Text>
-                </>
-              ) : (
-                <Box fontSize="sm" color="gray.500">
-                  未選択
-                </Box>
-              )}
-            </HStack>
+            <Form id="next-presenter-form" method="POST">
+              <Stack>
+                <HStack align="center" h="64px">
+                  <Text fontSize="sm" color="gray.500" fontWeight="bold">
+                    Selected
+                  </Text>
+                  {selectedGuest ? (
+                    <>
+                      <input
+                        type="hidden"
+                        name="presenterId"
+                        defaultValue={selectedGuest?.id}
+                      />
+                      <Avatar
+                        size="md"
+                        src={selectedGuest.lumaUser.avatarUrl}
+                      />
+                      <Box>
+                        <Text>
+                          {selectedGuest.lumaUser.name ?? 'Anonymous'}
+                        </Text>
+                        <Text color="gray.500" fontSize="xs">
+                          {selectedGuest.answers.sns}
+                        </Text>
+                      </Box>
+                    </>
+                  ) : (
+                    <Box fontSize="sm" color="gray.500">
+                      未選択
+                    </Box>
+                  )}
+                </HStack>
+                <FormControl>
+                  <FormLabel>Discordに通知</FormLabel>
+                  <Switch name="isPushDiscord" defaultChecked value="true" />
+                </FormControl>
+              </Stack>
+            </Form>
+
             <Form
               onChange={(e) => {
                 submit(e.currentTarget, { method: 'GET' })
@@ -104,13 +129,14 @@ export default function TrackNextPresenterPage() {
               <Input
                 type="search"
                 name="search"
-                placeholder="ゲストの名前を入力して検索"
+                placeholder="ゲスト名の一部を入力して検索"
                 defaultValue={search}
               />
             </Form>
 
             <Box fontSize="sm" color="gray.600" fontWeight="bold">
               {search && <span>"{search}"の検索結果:</span>} {guests.length}人
+              アルファベット順
             </Box>
 
             <Box maxH="60dvh" overflow="auto">
@@ -125,7 +151,7 @@ export default function TrackNextPresenterPage() {
                       bg={
                         selectedGuest?.id === guest.id ? 'blue.200' : undefined
                       }
-                      _hover={{ bg: 'gray.200' }}
+                      _hover={{ bg: 'gray.200', cursor: 'pointer' }}
                       onClick={() => {
                         setSelectedGuest(guest)
                       }}
@@ -146,20 +172,14 @@ export default function TrackNextPresenterPage() {
         </ModalBody>
 
         <ModalFooter gap="2">
-          <Form id="next-presenter-form" method="POST">
-            <input
-              type="hidden"
-              name="presenterId"
-              defaultValue={selectedGuest?.id}
-            />
-            <Button
-              form="next-presenter-form"
-              type="submit"
-              isDisabled={!selectedGuest}
-            >
-              Submit
-            </Button>
-          </Form>
+          <Button
+            form="next-presenter-form"
+            type="submit"
+            isDisabled={!selectedGuest}
+            isLoading={navigation.state !== 'idle'}
+          >
+            Submit
+          </Button>
 
           <Spacer />
           <Button variant="ghost" onClick={handleOnClose}>

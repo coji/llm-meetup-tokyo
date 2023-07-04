@@ -129,7 +129,7 @@ model DemoTrack {
 
 model DemoTrackPresenter {
   id          Int            @id @default(autoincrement())
-  demoTrack   DemoTrack      @relation(fields: [demoTrackId], references: [id])
+  demoTrack   DemoTrack      @relation(fields: [demoTrackId], references: [id], onDelete: Cascade)
   demoTrackId Int
   presenter   LumaEventGuest @relation(fields: [presenterId], references: [id])
   presenterId String

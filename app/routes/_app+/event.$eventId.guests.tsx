@@ -54,36 +54,42 @@ export default function EventDetailPage() {
               </AppLinkButton>
             </HStack>
 
-            <Flex flexWrap="wrap" gap="4">
-              {demoTracks.map((demoTrack) => (
-                <DemoTrackCard
-                  key={demoTrack.id}
-                  flex="1"
-                  eventId={eventId}
-                  trackId={demoTrack.id}
-                  title={demoTrack.title}
-                  state={demoTrack.state}
-                  presenter={
-                    demoTrack.currentPresenter
-                      ? {
-                          name:
-                            demoTrack.currentPresenter.lumaUser.name ??
-                            'Anonymous',
-                          avatarUrl:
-                            demoTrack.currentPresenter.lumaUser.avatarUrl,
-                          demo: demoTrack.currentPresenter.answers.demo,
-                        }
-                      : undefined
-                  }
-                  host={{
-                    name: demoTrack.host.lumaUser.name ?? 'Anonymous',
-                    avatarUrl: demoTrack.host.lumaUser.avatarUrl,
-                  }}
-                  zoomUrl={demoTrack.zoomUrl ?? undefined}
-                  to={`/event/${eventId}/track/${demoTrack.id}`}
-                />
-              ))}
-            </Flex>
+            {demoTracks.length > 0 ? (
+              <Flex flexWrap="wrap" gap="4">
+                {demoTracks.map((demoTrack) => (
+                  <DemoTrackCard
+                    key={demoTrack.id}
+                    flex="1"
+                    eventId={eventId}
+                    trackId={demoTrack.id}
+                    title={demoTrack.title}
+                    state={demoTrack.state}
+                    presenter={
+                      demoTrack.currentPresenter
+                        ? {
+                            name:
+                              demoTrack.currentPresenter.lumaUser.name ??
+                              'Anonymous',
+                            avatarUrl:
+                              demoTrack.currentPresenter.lumaUser.avatarUrl,
+                            demo: demoTrack.currentPresenter.answers.demo,
+                          }
+                        : undefined
+                    }
+                    host={{
+                      name: demoTrack.host.lumaUser.name ?? 'Anonymous',
+                      avatarUrl: demoTrack.host.lumaUser.avatarUrl,
+                    }}
+                    zoomUrl={demoTrack.zoomUrl ?? undefined}
+                    to={`/event/${eventId}/track/${demoTrack.id}`}
+                  />
+                ))}
+              </Flex>
+            ) : (
+              <Text textAlign="center" color="gray.500">
+                No demo tracks yet.
+              </Text>
+            )}
           </Stack>
         </CardBody>
       </Card>

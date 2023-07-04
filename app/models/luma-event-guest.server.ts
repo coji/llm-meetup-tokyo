@@ -113,7 +113,7 @@ export const searchEventGuests = async (eventId: string, search?: string) => {
       AND: [{ eventId }, { approvalStatus: 'approved' }, nameCondition],
     },
     include: { lumaUser: true },
-    orderBy: [{ createdAt: 'desc' }, { lumaUser: { name: 'asc' } }],
+    orderBy: [{ lumaUser: { name: 'asc' } }, { createdAt: 'desc' }], // 検索はABC順で
   })
   return eventGuests.map((guest) => convertEventGuest(guest)) // 登録時アンケートを整形
 }

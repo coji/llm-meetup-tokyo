@@ -139,13 +139,14 @@ export const DemoTrackCard = ({
       <CardBody pt="2">
         {presenter ? (
           <Stack>
-            <HStack align="start">
+            <HStack>
               <Avatar size="lg" src={presenter.avatarUrl} />
               <Box>
                 <Text wordBreak="break-word">{presenter.name}</Text>
                 <Text
                   fontSize="xs"
                   noOfLines={1}
+                  color="gray.500"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Linkify
