@@ -35,7 +35,7 @@ export default function EventDetailPage() {
         menu={[
           { label: 'Synchronize with luma', to: `/event/${event.id}/sync` },
         ]}
-      ></EventCard>
+      />
 
       <Outlet />
     </Stack>

@@ -8,6 +8,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Center,
   HStack,
   Menu,
   MenuButton,
@@ -44,7 +45,7 @@ interface DemoTrackCardProps extends CardProps {
   trackId: number
   title: string
   state: string
-  presenter: DemoTrackPresenter
+  presenter?: DemoTrackPresenter
   host: DemoTrackHost
   zoomUrl?: string
   menu?: DemoTrackMenuItem[]
@@ -136,41 +137,44 @@ export const DemoTrackCard = ({
       </CardHeader>
 
       <CardBody pt="2">
-        <Stack>
-          <HStack align="start">
-            <Avatar size="lg" src={presenter.avatarUrl} />
-            <Box>
-              <Text wordBreak="break-word">{presenter.name}</Text>
-              <Text
-                fontSize="xs"
-                noOfLines={1}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Linkify
-                  options={{
-                    defaultProtocol: 'https',
-                    target: '_blank',
-                  }}
+        {presenter ? (
+          <Stack>
+            <HStack align="start">
+              <Avatar size="lg" src={presenter.avatarUrl} />
+              <Box>
+                <Text wordBreak="break-word">{presenter.name}</Text>
+                <Text
+                  fontSize="xs"
+                  noOfLines={1}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  {presenter.sns}
-                </Linkify>
-              </Text>
-            </Box>
-            <Spacer />
-            {children}
-          </HStack>
-
-          <Text
-            rounded="md"
-            fontSize="md"
-            bg="gray.100"
-            p="4"
-            color="gray.600"
-            wordBreak="break-word"
-          >
-            {presenter.demo}
-          </Text>
-        </Stack>
+                  <Linkify
+                    options={{
+                      defaultProtocol: 'https',
+                      target: '_blank',
+                    }}
+                  >
+                    {presenter.sns}
+                  </Linkify>
+                </Text>
+              </Box>
+              <Spacer />
+              {children}
+            </HStack>
+            <Text
+              rounded="md"
+              fontSize="md"
+              bg="gray.100"
+              p="4"
+              color="gray.600"
+              wordBreak="break-word"
+            >
+              {presenter.demo}
+            </Text>
+          </Stack>
+        ) : (
+          <Center>{children}</Center>
+        )}
       </CardBody>
 
       <CardFooter borderTop="1px" borderColor="gray.200" justify="end" py="2">

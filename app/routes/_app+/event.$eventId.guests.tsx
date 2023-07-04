@@ -63,13 +63,18 @@ export default function EventDetailPage() {
                   trackId={demoTrack.id}
                   title={demoTrack.title}
                   state={demoTrack.state}
-                  presenter={{
-                    name:
-                      demoTrack.currentPresenter?.lumaUser.name ?? 'Anonymous',
-                    avatarUrl:
-                      demoTrack.currentPresenter?.lumaUser.avatarUrl ?? '',
-                    demo: demoTrack.currentPresenter?.answers.demo,
-                  }}
+                  presenter={
+                    demoTrack.currentPresenter
+                      ? {
+                          name:
+                            demoTrack.currentPresenter.lumaUser.name ??
+                            'Anonymous',
+                          avatarUrl:
+                            demoTrack.currentPresenter.lumaUser.avatarUrl,
+                          demo: demoTrack.currentPresenter.answers.demo,
+                        }
+                      : undefined
+                  }
                   host={{
                     name: demoTrack.host.lumaUser.name ?? 'Anonymous',
                     avatarUrl: demoTrack.host.lumaUser.avatarUrl,

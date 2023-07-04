@@ -14,6 +14,7 @@ import type { LoaderArgs } from '@remix-run/node'
 import { Outlet, Link as RemixLink, useNavigate } from '@remix-run/react'
 import Linkify from 'linkify-react'
 import { GiPlayerNext } from 'react-icons/gi'
+import { MdStart } from 'react-icons/md'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
@@ -45,12 +46,16 @@ export default function DemoTrackDetailPage() {
         trackId={demoTrack.id}
         title={demoTrack.title}
         state={demoTrack.state}
-        presenter={{
-          name: demoTrack.currentPresenter?.lumaUser.name || '',
-          avatarUrl: demoTrack.currentPresenter?.lumaUser.avatarUrl || '',
-          sns: demoTrack.currentPresenter?.answers.sns,
-          demo: demoTrack.currentPresenter?.answers.demo,
-        }}
+        presenter={
+          demoTrack.currentPresenter
+            ? {
+                name: demoTrack.currentPresenter.lumaUser.name || 'Anonymous',
+                avatarUrl: demoTrack.currentPresenter.lumaUser.avatarUrl,
+                sns: demoTrack.currentPresenter.answers.sns,
+                demo: demoTrack.currentPresenter.answers.demo,
+              }
+            : undefined
+        }
         host={{
           name: demoTrack.host.lumaUser.name ?? 'Anonymous',
           avatarUrl: demoTrack.host.lumaUser.avatarUrl,
@@ -69,10 +74,14 @@ export default function DemoTrackDetailPage() {
             as={RemixLink}
             to={`/event/${eventId}/track/${trackId}/next`}
             colorScheme="pink"
-            rightIcon={<GiPlayerNext />}
+            rightIcon={
+              demoTrack.currentPresenter ? <GiPlayerNext /> : <MdStart />
+            }
             onClick={(e) => e.stopPropagation()}
           >
-            Go Next
+            {demoTrack.currentPresenter
+              ? 'Set Next Presenter'
+              : 'Set First Presenter'}
           </Button>
         )}
       </DemoTrackCard>
