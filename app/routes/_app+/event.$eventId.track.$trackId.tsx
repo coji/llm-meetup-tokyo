@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
+import type { DemoTrack } from '@prisma/client'
 import type { LoaderArgs } from '@remix-run/node'
 import { Outlet, Link as RemixLink, useNavigate } from '@remix-run/react'
 import Linkify from 'linkify-react'
@@ -20,6 +21,19 @@ import { z } from 'zod'
 import { zx } from 'zodix'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
 import { getEventDemoTrack, listDemoTrackPresenters } from '~/models'
+
+export const handle = {
+  breadcrumb: ({
+    eventId,
+    demoTrack,
+  }: {
+    eventId: string
+    demoTrack: DemoTrack
+  }) => ({
+    label: demoTrack.title,
+    to: `/event/${eventId}/track/${demoTrack.id}`,
+  }),
+}
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId, trackId } = zx.parseParams(params, {

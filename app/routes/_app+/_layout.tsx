@@ -1,15 +1,17 @@
-import { Container } from '@chakra-ui/react'
+import { Container, Stack } from '@chakra-ui/react'
 import { json, type LoaderArgs } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
-import { AppFooter, AppHeader } from '~/components'
+import { AppBreadcrumbs, AppFooter, AppHeader } from '~/components'
+import { useAppBreadcrumbs } from '~/hooks/use-app-breadcrumbs'
 import { requireUser } from '~/services/auth.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await requireUser(request)
-  return json({ user })
+  await requireUser(request)
+  return json({})
 }
 
 export default function AppLayout() {
+  const breadcrumbs = useAppBreadcrumbs()
   return (
     <>
       <Container
@@ -19,7 +21,10 @@ export default function AppLayout() {
         minH="100dvh"
       >
         <AppHeader title="LLM Meetup Tokyo" to="/" />
-        <Outlet />
+        <Stack>
+          <AppBreadcrumbs items={breadcrumbs} />
+          <Outlet />
+        </Stack>
         <AppFooter />
       </Container>
     </>
