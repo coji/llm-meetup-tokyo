@@ -1,4 +1,6 @@
 export * from './config.server'
+export * from './demo-track-presenter.server'
+export * from './demo-track.server'
 export * from './luma-crawl-job.server'
 export * from './luma-event-guest-demo-edit-log.server'
 export * from './luma-event-guest.server'

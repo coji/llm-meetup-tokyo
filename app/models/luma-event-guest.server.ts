@@ -57,7 +57,9 @@ export const upsertLumaEventGuests = async (guests: LumaApiGuest[]) => {
  * @param guest
  * @returns
  */
-const convertEventGuest = (guest: LumaEventGuest & { lumaUser: LumaUser }) => {
+export const convertEventGuest = (
+  guest: LumaEventGuest & { lumaUser: LumaUser },
+) => {
   const { registrationAnswers, demo, ...rest } = guest
   const answers = registrationAnswers as {
     label: string
@@ -96,11 +98,24 @@ export const listEventGuests = async (eventId: string) => {
   const eventGuests = await prisma.lumaEventGuest.findMany({
     where: { eventId, approvalStatus: 'approved' },
     include: { lumaUser: true },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ createdAt: 'desc' }, { lumaUser: { name: 'asc' } }],
   })
+  return eventGuests.map((guest) => convertEventGuest(guest)) // 登録時アンケートを整形
+}
 
-  // 登録時アンケートを整形
-  return eventGuests.map((guest) => convertEventGuest(guest))
+export const searchEventGuests = async (eventId: string, search?: string) => {
+  const nameCondition = search
+    ? { lumaUser: { name: { contains: search } } }
+    : {}
+
+  const eventGuests = await prisma.lumaEventGuest.findMany({
+    where: {
+      AND: [{ eventId }, { approvalStatus: 'approved' }, nameCondition],
+    },
+    include: { lumaUser: true },
+    orderBy: [{ lumaUser: { name: 'asc' } }, { createdAt: 'desc' }], // 検索はABC順で
+  })
+  return eventGuests.map((guest) => convertEventGuest(guest)) // 登録時アンケートを整形
 }
 
 export const getEventGuestById = async (id: string) => {

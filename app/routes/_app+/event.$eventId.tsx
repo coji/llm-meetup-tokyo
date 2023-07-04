@@ -28,7 +28,14 @@ export default function EventDetailPage() {
         ]}
       />
 
-      <EventCard event={event} key={event.id} />
+      <EventCard
+        event={event}
+        key={event.id}
+        to={`/event/${event.id}`}
+        menu={[
+          { label: 'Synchronize with luma', to: `/event/${event.id}/sync` },
+        ]}
+      />
 
       <Outlet />
     </Stack>

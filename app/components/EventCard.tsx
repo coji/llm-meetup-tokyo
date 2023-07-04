@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { ExternalLinkIcon, SettingsIcon } from '@chakra-ui/icons'
 import {
   Box,
   Card,
@@ -8,26 +8,42 @@ import {
   Heading,
   Image,
   Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Stack,
   Text,
   type CardProps,
 } from '@chakra-ui/react'
 import type { LumaEvent } from '@prisma/client'
-import { useNavigate } from '@remix-run/react'
+import { Link as RemixLink, useNavigate } from '@remix-run/react'
 import { RiMapPinLine, RiTeamLine } from 'react-icons/ri'
 import dayjs from '~/utils/dayjs'
 import { AppLinkButton } from './AppLinkButton'
 
+interface EventCardMenuItem {
+  label: string
+  to: string
+}
+
 interface EventCardProps extends CardProps {
   to?: string
   event: LumaEvent
+  menu?: EventCardMenuItem[]
   children?: React.ReactNode
 }
-export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
+export const EventCard = ({
+  to,
+  event,
+  menu,
+  children,
+  ...rest
+}: EventCardProps) => {
   const navigate = useNavigate()
   return (
     <Card
-      _hover={{ cursor: to ? 'pointer' : 'default' }}
+      _hover={{ cursor: to ? 'pointer' : 'default', bg: 'gray.50' }}
       onClick={() => {
         if (to) {
           navigate(to)
@@ -51,21 +67,53 @@ export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
 
           <Stack spacing="2">
             {/* Heading */}
-            <Box>
-              <Text color="gray.600" fontSize="sm">
-                {dayjs(event.startAt)
-                  .tz('Asia/Tokyo')
-                  .format('M月D日 dddd HH:mm')}
-              </Text>
-              <Heading size="md">{event.name}</Heading>
-            </Box>
+            <HStack align="start">
+              <Box flex="1">
+                <Text color="gray.600" fontSize="sm">
+                  {dayjs(event.startAt)
+                    .tz('Asia/Tokyo')
+                    .format('M月D日 dddd HH:mm')}
+                </Text>
+                <Heading size="md">{event.name}</Heading>
+              </Box>
+
+              {menu && (
+                <Menu>
+                  <MenuButton
+                    px={2}
+                    py={0}
+                    transition="all 0.2s"
+                    borderRadius="md"
+                    color="gray.400"
+                    _hover={{ bg: 'gray.600', color: 'white' }}
+                    _expanded={{ bg: 'gray.600', color: 'white' }}
+                    _focus={{ boxShadow: 'outline' }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <SettingsIcon h="3" w="3" />
+                  </MenuButton>
+                  <MenuList>
+                    {menu.map((menuItem, idx) => (
+                      <MenuItem
+                        as={RemixLink}
+                        to={menuItem.to}
+                        key={idx}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {menuItem.label}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
+              )}
+            </HStack>
 
             {/* Guests and Geo */}
             <Stack
               color="gray.600"
               fontSize="sm"
               gap={{ base: '2', md: '4' }}
-              direction={{ base: 'column', md: 'row' }}
+              direction="row"
             >
               <HStack>
                 <Box rounded="md" border="1px" borderColor="gray.200" p="2">
@@ -84,7 +132,7 @@ export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
                     isExternal
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Text>
+                    <Text color="black">
                       {event.geoAddress} <ExternalLinkIcon />
                     </Text>
                     <Text fontSize="xs">{event.geoCityState}</Text>
@@ -101,7 +149,8 @@ export const EventCard = ({ to, event, children, ...rest }: EventCardProps) => {
               >
                 Luma Event Page
               </AppLinkButton>
-              <AppLinkButton to={`/event/${event.id}/sync`}>Sync</AppLinkButton>
+
+              {children}
             </HStack>
           </Stack>
         </Grid>
