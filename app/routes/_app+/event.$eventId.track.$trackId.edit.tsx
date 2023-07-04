@@ -2,7 +2,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  HStack,
   Input,
   Modal,
   ModalBody,
@@ -98,15 +97,13 @@ export default function TrackEditPage() {
         </ModalBody>
 
         <ModalFooter>
-          <HStack>
-            <Button type="submit" form="track-edit-form">
-              Submit
-            </Button>
-            <Spacer />
-            <Button onClick={handleOnClose} variant="ghost">
-              Cancel
-            </Button>
-          </HStack>
+          <Button type="submit" form="track-edit-form">
+            Submit
+          </Button>
+          <Spacer />
+          <Button onClick={handleOnClose} variant="ghost">
+            Cancel
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

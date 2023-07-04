@@ -1,6 +1,5 @@
 import {
   Button,
-  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -41,17 +40,15 @@ export default function TrackNextPresenterPage() {
         <ModalBody>Demo Track を削除します。よろしいですか？</ModalBody>
 
         <ModalFooter>
-          <HStack>
-            <form method="POST">
-              <Button type="submit" colorScheme="red">
-                削除
-              </Button>
-            </form>
-            <Spacer />
-            <Button variant="ghost" onClick={handleOnClose}>
-              Cancel
+          <form method="POST">
+            <Button type="submit" colorScheme="red">
+              削除
             </Button>
-          </HStack>
+          </form>
+          <Spacer />
+          <Button variant="ghost" onClick={handleOnClose}>
+            Cancel
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
