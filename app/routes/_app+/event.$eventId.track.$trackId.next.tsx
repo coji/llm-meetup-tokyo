@@ -29,6 +29,7 @@ import {
   searchEventGuests,
   setDemoTrackCurrentPresenter,
 } from '~/models'
+import { sendNextPresenterNotifyToDiscord } from '~/services/discord-notify.server'
 import { emitter } from '~/services/emitter.server'
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -51,12 +52,21 @@ export const action = async ({ request, params }: ActionArgs) => {
     trackId: zx.NumAsString,
   })
   const { presenterId, isPushDiscord } = await zx.parseForm(request, {
-    presenterId: z.string().min(1),
+    presenterId: z.string().optional(),
     isPushDiscord: zx.BoolAsString,
   })
   const demoTrack = await getEventDemoTrack(trackId)
   await setDemoTrackCurrentPresenter(demoTrack.id, presenterId)
+
   emitter.emit('event', eventId) // イベント更新をリアルタイム通知
+  // discord に通知
+  if (isPushDiscord && presenterId) {
+    await sendNextPresenterNotifyToDiscord({
+      eventId,
+      trackId,
+      presenterGuestId: presenterId,
+    })
+  }
 
   return redirect('..')
 }
@@ -65,7 +75,7 @@ export default function TrackNextPresenterPage() {
   const { demoTrack, search, guests } = useTypedLoaderData<typeof loader>()
   const [selectedGuest, setSelectedGuest] = useState<
     (typeof guests)[0] | undefined
-  >()
+  >(demoTrack.currentPresenter ?? undefined)
   const submit = useSubmit()
   const navigation = useNavigation()
   const navigate = useNavigate()
@@ -76,11 +86,7 @@ export default function TrackNextPresenterPage() {
     <Modal isOpen={true} onClose={handleOnClose}>
       <ModalOverlay />
       <ModalContent maxH="80dvh">
-        <ModalHeader>
-          {demoTrack.currentPresenter
-            ? 'Set Next Presenter'
-            : 'Set First Presenter'}
-        </ModalHeader>
+        <ModalHeader>Set Presenter</ModalHeader>
         <ModalCloseButton />
         <ModalBody overflow="auto">
           <Form id="next-presenter-form" method="POST">
@@ -171,7 +177,6 @@ export default function TrackNextPresenterPage() {
           <Button
             form="next-presenter-form"
             type="submit"
-            isDisabled={!selectedGuest}
             isLoading={navigation.state !== 'idle'}
           >
             Submit

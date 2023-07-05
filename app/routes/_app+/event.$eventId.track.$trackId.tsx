@@ -93,9 +93,7 @@ export default function DemoTrackDetailPage() {
             }
             onClick={(e) => e.stopPropagation()}
           >
-            {demoTrack.currentPresenter
-              ? 'Set Next Presenter'
-              : 'Set First Presenter'}
+            Set Presenter
           </Button>
         )}
       </DemoTrackCard>

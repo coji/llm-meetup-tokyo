@@ -67,18 +67,25 @@ export const deleteDemoTrack = async (id: DemoTrack['id']) => {
 // 現在のプレゼンターを設定
 export const setDemoTrackCurrentPresenter = async (
   id: DemoTrack['id'],
-  presenterId: LumaEventGuest['id'],
+  presenterId?: LumaEventGuest['id'],
 ) => {
-  return await prisma.$transaction([
-    prisma.demoTrack.update({
+  if (presenterId) {
+    return await prisma.$transaction([
+      prisma.demoTrack.update({
+        where: { id },
+        data: { currentPresenterId: presenterId },
+      }),
+      prisma.demoTrackPresenter.create({
+        data: {
+          demoTrackId: id,
+          presenterId,
+        },
+      }),
+    ])
+  } else {
+    return await prisma.demoTrack.update({
       where: { id },
-      data: { currentPresenterId: presenterId },
-    }),
-    prisma.demoTrackPresenter.create({
-      data: {
-        demoTrackId: id,
-        presenterId,
-      },
-    }),
-  ])
+      data: { currentPresenterId: null },
+    })
+  }
 }
