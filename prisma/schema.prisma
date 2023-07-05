@@ -58,6 +58,8 @@ model LumaEventGuest {
   registrationAnswers Json
 
   demo String? // 編集されたデモ内容
+  vector              Json?
+  clusterIndex        Int?
 
   updatedAt             DateTime
   createdAt             DateTime

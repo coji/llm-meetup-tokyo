@@ -34,6 +34,8 @@ export default function EventDetailPage() {
         to={`/event/${event.id}`}
         menu={[
           { label: 'Synchronize with luma', to: `/event/${event.id}/sync` },
+          { label: 'embedding', to: `/event/${event.id}/embed` },
+          { label: 'clustering', to: `/event/${event.id}/cluster` },
         ]}
       />
 

@@ -9,6 +9,7 @@ import {
   Heading,
   Spacer,
   Stack,
+  Tag,
   Text,
 } from '@chakra-ui/react'
 import { type LoaderArgs } from '@remix-run/node'
@@ -168,6 +169,12 @@ export default function EventDetailPage() {
                       {guest.answers.demo}
                     </Linkify>
                   </Box>
+
+                  {guest.clusterIndex !== null && (
+                    <HStack fontSize="sm">
+                      <Text>クラスタ</Text> <Tag>{guest.clusterIndex}</Tag>
+                    </HStack>
+                  )}
                 </Flex>
               )
             })}
