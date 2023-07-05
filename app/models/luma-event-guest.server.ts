@@ -98,7 +98,11 @@ export const listEventGuests = async (eventId: string) => {
   const eventGuests = await prisma.lumaEventGuest.findMany({
     where: { eventId, approvalStatus: 'approved' },
     include: { lumaUser: true },
-    orderBy: [{ createdAt: 'desc' }, { lumaUser: { name: 'asc' } }],
+    orderBy: [
+      { clusterIndex: 'asc' },
+      { createdAt: 'desc' },
+      { lumaUser: { name: 'asc' } },
+    ],
   })
   return eventGuests.map((guest) => convertEventGuest(guest)) // 登録時アンケートを整形
 }
