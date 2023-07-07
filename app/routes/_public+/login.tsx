@@ -14,27 +14,27 @@ import { json, type LoaderArgs } from '@remix-run/node'
 import { useLoaderData, useLocation } from '@remix-run/react'
 import { AppSignInButton } from '~/components/AppSignInButton'
 import { authenticator } from '~/services/auth.server'
-import { sessionStorage } from '~/services/session.server'
+import { returnToCookie, sessionStorage } from '~/services/session.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const headers = new Headers()
+
+  // redirectTo
+  const url = new URL(request.url)
+  const returnTo = url.searchParams.get('returnTo')
+  headers.append('Set-Cookie', await returnToCookie.serialize(returnTo))
+
   // ログイン時のエラーメッセージがもしあればそれを表示する
   const session = await sessionStorage.getSession(
     request.headers.get('Cookie') || '',
   )
-
   const error = session.get(authenticator.sessionErrorKey) as
     | { message: string }
     | undefined
+  // flash messageを削除するためにセッションを更新
+  headers.append('Set-Cookie', await sessionStorage.commitSession(session))
 
-  return json(
-    { errorMessage: error?.message },
-    {
-      // flash messageを削除するためにセッションを更新
-      headers: new Headers({
-        'Set-Cookie': await sessionStorage.commitSession(session),
-      }),
-    },
-  )
+  return json({ errorMessage: error?.message }, { headers })
 }
 
 export default function LoginPage() {
