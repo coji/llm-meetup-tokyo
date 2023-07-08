@@ -16,10 +16,6 @@ export const theme = extendTheme({
     },
   },
   config: { useSystemColorMode: false, initialColorMode: 'light' },
-  components: {
-    Link: { baseStyle: { color: 'gray.600' } },
-    Heading: { baseStyle: { color: 'gray.600' } },
-  },
   styles: {
     global: {
       body: {
@@ -31,6 +27,21 @@ export const theme = extendTheme({
       a: {
         cursor: 'pointer',
         color: 'discord.500',
+      },
+    },
+  },
+  semanticTokens: {
+    colors: {
+      card: {
+        text: {
+          thin: { default: 'gray.600', _dark: '#ffffff' },
+          base: { default: 'gray.900', _dark: '#ffffff' },
+          bold: { default: 'black', _dark: '#ffffff' },
+        },
+        bg: {
+          base: { default: 'white', _dark: '#1e1e1e' },
+          hover: { default: 'gray.50', _dark: '#2d2d2d' },
+        },
       },
     },
   },

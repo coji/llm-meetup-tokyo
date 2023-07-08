@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   Card,
@@ -13,13 +12,13 @@ import {
 import type { DemoTrack } from '@prisma/client'
 import type { LoaderArgs } from '@remix-run/node'
 import { Outlet, Link as RemixLink, useNavigate } from '@remix-run/react'
-import Linkify from 'linkify-react'
 import { GiPlayerNext } from 'react-icons/gi'
 import { MdStart } from 'react-icons/md'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
+import { EventGuestItem } from '~/components/EventGuestItem'
 import { getEventDemoTrack, listDemoTrackPresenters } from '~/models'
 
 export const handle = {
@@ -131,44 +130,13 @@ export default function DemoTrackDetailPage() {
                       })
                     }}
                   >
-                    <HStack w={{ base: 'auto', md: '16rem' }} gap="4">
-                      <Avatar
-                        size="sm"
-                        src={presenter.lumaUser.avatarUrl}
-                      ></Avatar>
-                      <Box>
-                        <Text>{presenter.lumaUser.name ?? 'Anonymous'}</Text>
-
-                        <Text
-                          fontSize="xs"
-                          color="gray.500"
-                          wordBreak="break-all"
-                        >
-                          <Linkify
-                            options={{
-                              defaultProtocol: 'https',
-                              target: '_blank',
-                            }}
-                          >
-                            {presenter.answers.sns}
-                          </Linkify>
-                        </Text>
-                      </Box>
-                    </HStack>
-
-                    <Box
-                      flex="1"
-                      fontSize="sm"
-                      color="gray.500"
-                      p="1"
-                      wordBreak="break-all"
-                    >
-                      <Linkify
-                        options={{ defaultProtocol: 'https', target: '_blank' }}
-                      >
-                        {presenter.answers.demo}
-                      </Linkify>
-                    </Box>
+                    <EventGuestItem
+                      name={presenter.lumaUser.name ?? 'Anonymous'}
+                      sns={presenter.answers.sns}
+                      avatarUrl={presenter.lumaUser.avatarUrl}
+                      demo={presenter.answers.demo}
+                      clusterIndex={presenter.clusterIndex ?? undefined}
+                    />
                   </Flex>
                 )
               })}

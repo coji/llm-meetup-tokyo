@@ -1,6 +1,5 @@
 import { AddIcon, DownloadIcon } from '@chakra-ui/icons'
 import {
-  Avatar,
   Box,
   Card,
   CardBody,
@@ -9,17 +8,16 @@ import {
   Heading,
   Spacer,
   Stack,
-  Tag,
   Text,
 } from '@chakra-ui/react'
 import { type LoaderArgs } from '@remix-run/node'
 import { Outlet, useNavigate } from '@remix-run/react'
-import Linkify from 'linkify-react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { AppLinkButton } from '~/components'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
+import { EventGuestItem } from '~/components/EventGuestItem'
 import { useEventUpdater } from '~/hooks/use-event-updater'
 import { listEventDemoTracks, listEventGuests } from '~/models'
 
@@ -118,7 +116,6 @@ export default function EventDetailPage() {
               return (
                 <Flex
                   key={guest.id}
-                  direction={{ base: 'column', md: 'row' }}
                   gap={{ base: '0', md: '2' }}
                   _hover={{ bg: 'gray.100', cursor: 'pointer' }}
                   py="2"
@@ -134,47 +131,13 @@ export default function EventDetailPage() {
                     })
                   }}
                 >
-                  <HStack w={{ base: 'auto', md: '16rem' }} gap="4">
-                    <Avatar size="sm" src={guest.lumaUser.avatarUrl}></Avatar>
-                    <Box>
-                      <Text>{guest.lumaUser.name ?? 'Anonymous'}</Text>
-
-                      <Text
-                        fontSize="xs"
-                        color="gray.500"
-                        wordBreak="break-all"
-                      >
-                        <Linkify
-                          options={{
-                            defaultProtocol: 'https',
-                            target: '_blank',
-                          }}
-                        >
-                          {guest.answers.sns}
-                        </Linkify>
-                      </Text>
-                    </Box>
-                  </HStack>
-
-                  <Box
-                    flex="1"
-                    fontSize="sm"
-                    color="gray.500"
-                    p="1"
-                    wordBreak="break-all"
-                  >
-                    <Linkify
-                      options={{ defaultProtocol: 'https', target: '_blank' }}
-                    >
-                      {guest.answers.demo}
-                    </Linkify>
-                  </Box>
-
-                  {guest.clusterIndex !== null && (
-                    <HStack fontSize="sm">
-                      <Text>クラスタ</Text> <Tag>{guest.clusterIndex}</Tag>
-                    </HStack>
-                  )}
+                  <EventGuestItem
+                    name={guest.lumaUser.name ?? 'Anonymous'}
+                    sns={guest.answers.sns}
+                    avatarUrl={guest.lumaUser.avatarUrl}
+                    demo={guest.answers.demo}
+                    clusterIndex={guest.clusterIndex ?? undefined}
+                  />
                 </Flex>
               )
             })}

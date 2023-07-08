@@ -76,9 +76,11 @@ export const DemoTrackCard = ({
     <Card
       minW="300px"
       variant="outline"
+      color="card.text.base"
+      bg="card.bg.base"
       _hover={{
         cursor: to ? 'pointer' : 'default',
-        bg: to ? 'gray.50' : 'default',
+        bg: to ? 'card.bg.highlight' : 'default',
       }}
       onClick={() => {
         if (to) {
@@ -101,10 +103,9 @@ export const DemoTrackCard = ({
                 py={0}
                 transition="all 0.2s"
                 borderRadius="md"
-                color="gray.400"
-                _hover={{ bg: 'gray.600', color: 'white' }}
-                _expanded={{ bg: 'gray.600', color: 'white' }}
-                _focus={{ boxShadow: 'outline' }}
+                color="card.text.thin"
+                _hover={{ bg: 'card.text.thin', color: 'card.bg.hover' }}
+                _expanded={{ bg: 'card.text.thin', color: 'card.bg.hover' }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <SettingsIcon h="3" w="3" />
@@ -141,7 +142,6 @@ export const DemoTrackCard = ({
                 <Text
                   fontSize="xs"
                   noOfLines={1}
-                  color="gray.500"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Linkify

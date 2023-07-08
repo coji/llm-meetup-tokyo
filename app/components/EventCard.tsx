@@ -43,7 +43,9 @@ export const EventCard = ({
   const navigate = useNavigate()
   return (
     <Card
-      _hover={{ cursor: to ? 'pointer' : 'default', bg: 'gray.50' }}
+      color="card.text.base"
+      bg="card.bg.base"
+      _hover={{ cursor: to ? 'pointer' : 'default', bg: 'card.bg.hover' }}
       onClick={() => {
         if (to) {
           navigate(to)
@@ -69,7 +71,7 @@ export const EventCard = ({
             {/* Heading */}
             <HStack align="start">
               <Box flex="1">
-                <Text color="gray.600" fontSize="sm">
+                <Text fontSize="sm">
                   {dayjs(event.startAt)
                     .tz('Asia/Tokyo')
                     .format('M月D日 dddd HH:mm')}
@@ -84,9 +86,9 @@ export const EventCard = ({
                     py={0}
                     transition="all 0.2s"
                     borderRadius="md"
-                    color="gray.400"
-                    _hover={{ bg: 'gray.600', color: 'white' }}
-                    _expanded={{ bg: 'gray.600', color: 'white' }}
+                    color="card.text.thin"
+                    _hover={{ bg: 'card.text.thin', color: 'white' }}
+                    _expanded={{ bg: 'card.text.thin', color: 'white' }}
                     _focus={{ boxShadow: 'outline' }}
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -109,21 +111,26 @@ export const EventCard = ({
             </HStack>
 
             {/* Guests and Geo */}
-            <Stack
-              color="gray.600"
-              fontSize="sm"
-              gap={{ base: '2', md: '4' }}
-              direction="row"
-            >
+            <Stack fontSize="sm" gap={{ base: '2', md: '4' }} direction="row">
               <HStack>
-                <Box rounded="md" border="1px" borderColor="gray.200" p="2">
+                <Box
+                  rounded="md"
+                  border="1px"
+                  borderColor="card.text.thin"
+                  p="2"
+                >
                   <RiTeamLine />
                 </Box>
                 <Text>{event.guestCount} Guests</Text>
               </HStack>
 
               <HStack>
-                <Box rounded="md" border="1px" borderColor="gray.200" p="2">
+                <Box
+                  rounded="md"
+                  border="1px"
+                  borderColor="card.text.thin"
+                  p="2"
+                >
                   <RiMapPinLine />
                 </Box>
                 <Box>
@@ -132,7 +139,7 @@ export const EventCard = ({
                     isExternal
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Text color="black">
+                    <Text>
                       {event.geoAddress} <ExternalLinkIcon />
                     </Text>
                     <Text fontSize="xs">{event.geoCityState}</Text>
