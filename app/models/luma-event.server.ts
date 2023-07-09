@@ -9,13 +9,6 @@ export const listLumaEvents = async () => {
     cache: lru,
     getFreshValue: async () => {
       return await prisma.lumaEvent.findMany({
-        include: {
-          lumaEventGuest: {
-            include: { lumaUser: true },
-            where: { approvalStatus: { in: ['approved', 'invited'] } },
-            orderBy: { createdAt: 'desc' },
-          },
-        },
         orderBy: { startAt: 'desc' },
       })
     },
