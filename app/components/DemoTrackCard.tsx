@@ -136,7 +136,7 @@ export const DemoTrackCard = ({
         {presenter ? (
           <Stack>
             <HStack>
-              <Avatar size="lg" src={presenter.avatarUrl} />
+              <Avatar size="lg" src={presenter.avatarUrl} loading="lazy" />
               <Box>
                 <Text wordBreak="break-word">{presenter.name}</Text>
                 <Text
@@ -203,7 +203,7 @@ export const DemoTrackCard = ({
               Hosted by
             </Text>
             <HStack>
-              <Avatar size="xs" src={host.avatarUrl}></Avatar>
+              <Avatar size="xs" src={host.avatarUrl} loading="lazy"></Avatar>
               <Text noOfLines={1}>{host.name}</Text>
             </HStack>
           </Box>

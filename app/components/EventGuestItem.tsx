@@ -26,7 +26,7 @@ export const EventGuestItem = ({
   return (
     <Stack direction={{ base: 'column', md: 'row' }}>
       <HStack w={{ base: 'auto', md: '16rem' }} gap="4">
-        <Avatar size="sm" src={avatarUrl}></Avatar>
+        <Avatar size="sm" src={avatarUrl} loading="lazy"></Avatar>
         <Box>
           <Text>{name}</Text>
 

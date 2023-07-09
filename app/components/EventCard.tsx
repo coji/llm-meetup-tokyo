@@ -65,6 +65,7 @@ export const EventCard = ({
             objectFit="cover"
             src={event.coverUrl}
             alt={event.name}
+            loading="lazy"
           />
 
           <Stack spacing="2">
