@@ -4,6 +4,8 @@ import { LRUCache } from 'lru-cache'
 import { prisma } from '~/services/database.server'
 import { type LumaApiGuest } from '~/services/luma.server'
 
+const lru = new LRUCache<string, CacheEntry>({ max: 1000 })
+
 export const upsertLumaEventGuests = async (guests: LumaApiGuest[]) => {
   for (const guest of guests) {
     await prisma.$transaction([
@@ -96,8 +98,6 @@ export const convertEventGuest = (
     },
   }
 }
-
-const lru = new LRUCache<string, CacheEntry>({ max: 1000 })
 
 export const listEventGuests = async (eventId: string) => {
   const eventGuests = await cachified({
