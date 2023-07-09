@@ -4,12 +4,10 @@ import type {
   LumaEventGuest,
   Prisma,
 } from '@prisma/client'
-import { cachified, type CacheEntry } from 'cachified'
-import { LRUCache } from 'lru-cache'
+import { cachified } from 'cachified'
 import { prisma } from '~/services/database.server'
+import { lru } from '~/services/lru-cache.server'
 import { convertEventGuest } from './luma-event-guest.server'
-
-const lru = new LRUCache<string, CacheEntry>({ max: 1000 })
 
 export const listEventDemoTracks = async (eventId: LumaEvent['id']) => {
   const demoTracks = await cachified({
