@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, Progress } from '@chakra-ui/react'
 import { json, type LoaderArgs, type V2_MetaFunction } from '@remix-run/node'
 import {
   Links,
@@ -7,6 +7,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigation,
 } from '@remix-run/react'
 import { createHead } from 'remix-island'
 import { authenticator } from './services/auth.server'
@@ -36,11 +37,26 @@ export const Head = createHead(() => (
 ))
 
 export default function App() {
+  const navigation = useNavigation()
+
   return (
     <>
       <Head />
       <ChakraProvider resetCSS theme={theme}>
-        <Outlet />
+        <>
+          {navigation.state !== 'idle' && (
+            <Progress
+              size="xs"
+              colorScheme="discord"
+              isIndeterminate
+              position="fixed"
+              top="0"
+              left="0"
+              right="0"
+            />
+          )}
+          <Outlet />
+        </>
       </ChakraProvider>
       <ScrollRestoration />
       <Scripts />
