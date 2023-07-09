@@ -4,7 +4,7 @@ import { Form, useNavigation } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
-import { embedEventGuests } from '~/jobs/embed-event-guests'
+import { embedEventGuests } from '~/jobs/embed-event-guests.server'
 import { getEventById } from '~/models'
 import { emitter } from '~/services/emitter.server'
 

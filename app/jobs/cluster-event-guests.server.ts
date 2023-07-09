@@ -1,12 +1,16 @@
+import { Prisma } from '@prisma/client'
 import kmeans from 'skmeans'
-import { listEventGuests } from '~/models'
 import { prisma } from '~/services/database.server'
+import { lru } from '~/services/lru-cache.server'
 
 export const clusterEventGuests = async (eventId: string, clusterNum = 3) => {
-  const guests = (await listEventGuests(eventId)).filter(
-    (guest) => !!guest.vector,
-  )
+  const guests = await prisma.lumaEventGuest.findMany({
+    where: { eventId, vector: { not: Prisma.DbNull } },
+    select: { id: true, vector: true },
+  })
+
   const vectors = guests.map((guest) => guest.vector as number[])
+  console.log(vectors.length)
 
   // クラスタリング実行
   const clusters = kmeans(vectors, clusterNum)
@@ -23,4 +27,7 @@ export const clusterEventGuests = async (eventId: string, clusterNum = 3) => {
       data: { clusterIndex: guest.clusterIndex },
     })
   }
+
+  // イベントのゲストリストキャッシュクリア
+  lru.delete(`eventGuests-${eventId}`)
 }

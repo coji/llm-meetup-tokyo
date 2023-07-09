@@ -1,5 +1,5 @@
 import { cli, command } from 'cleye'
-import { clusterEventGuests } from '~/jobs/cluster-event-guests'
+import { clusterEventGuests } from '~/jobs/cluster-event-guests.server'
 
 cli({
   name: 'llm-meetup-tokyo',
