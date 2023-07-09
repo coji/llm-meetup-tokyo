@@ -4,17 +4,26 @@ import type {
   LumaEventGuest,
   Prisma,
 } from '@prisma/client'
+import { cachified, type CacheEntry } from 'cachified'
+import { LRUCache } from 'lru-cache'
 import { prisma } from '~/services/database.server'
 import { convertEventGuest } from './luma-event-guest.server'
 
+const lru = new LRUCache<string, CacheEntry>({ max: 1000 })
+
 export const listEventDemoTracks = async (eventId: LumaEvent['id']) => {
-  const demoTracks = await prisma.demoTrack.findMany({
-    where: { eventId },
-    include: {
-      currentPresenter: { include: { lumaUser: true } },
-      host: { include: { lumaUser: true } },
-    },
-    orderBy: { title: 'asc' },
+  const demoTracks = await cachified({
+    key: `event-demo-tracks-${eventId}`,
+    cache: lru,
+    getFreshValue: async () =>
+      await prisma.demoTrack.findMany({
+        where: { eventId },
+        include: {
+          currentPresenter: { include: { lumaUser: true } },
+          host: { include: { lumaUser: true } },
+        },
+        orderBy: { title: 'asc' },
+      }),
   })
 
   return demoTracks.map((demoTrack) => {
@@ -57,11 +66,15 @@ export const updateDemoTrack = async (
 export const createDemoTrack = async (
   data: Prisma.DemoTrackUncheckedCreateInput,
 ) => {
-  await prisma.demoTrack.create({ data })
+  const ret = await prisma.demoTrack.create({ data })
+  lru.clear()
+  return ret
 }
 
 export const deleteDemoTrack = async (id: DemoTrack['id']) => {
-  return await prisma.demoTrack.delete({ where: { id } })
+  const ret = await prisma.demoTrack.delete({ where: { id } })
+  lru.clear()
+  return ret
 }
 
 // 現在のプレゼンターを設定
@@ -70,7 +83,7 @@ export const setDemoTrackCurrentPresenter = async (
   presenterId?: LumaEventGuest['id'],
 ) => {
   if (presenterId) {
-    return await prisma.$transaction([
+    await prisma.$transaction([
       prisma.demoTrack.update({
         where: { id },
         data: { currentPresenterId: presenterId },
@@ -83,9 +96,10 @@ export const setDemoTrackCurrentPresenter = async (
       }),
     ])
   } else {
-    return await prisma.demoTrack.update({
+    await prisma.demoTrack.update({
       where: { id },
       data: { currentPresenterId: null },
     })
   }
+  lru.clear()
 }
