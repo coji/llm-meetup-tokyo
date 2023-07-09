@@ -1,4 +1,6 @@
 import type { LumaEventGuest, LumaUser, Prisma } from '@prisma/client'
+import { cachified, type CacheEntry } from 'cachified'
+import { LRUCache } from 'lru-cache'
 import { prisma } from '~/services/database.server'
 import { type LumaApiGuest } from '~/services/luma.server'
 
@@ -50,6 +52,7 @@ export const upsertLumaEventGuests = async (guests: LumaApiGuest[]) => {
       }),
     ])
   }
+  lru.clear()
 }
 
 /**
@@ -94,15 +97,23 @@ export const convertEventGuest = (
   }
 }
 
+const lru = new LRUCache<string, CacheEntry>({ max: 1000 })
+
 export const listEventGuests = async (eventId: string) => {
-  const eventGuests = await prisma.lumaEventGuest.findMany({
-    where: { eventId, approvalStatus: 'approved' },
-    include: { lumaUser: true },
-    orderBy: [
-      { clusterIndex: 'asc' },
-      { createdAt: 'desc' },
-      { lumaUser: { name: 'asc' } },
-    ],
+  const eventGuests = await cachified({
+    key: `eventGuests-${eventId}`,
+    cache: lru,
+    getFreshValue: async () =>
+      await prisma.lumaEventGuest.findMany({
+        where: { eventId, approvalStatus: 'approved' },
+        include: { lumaUser: true },
+        orderBy: [
+          { clusterIndex: 'asc' },
+          { createdAt: 'desc' },
+          { lumaUser: { name: 'asc' } },
+        ],
+      }),
+    ttl: 300_000, // 5分
   })
   return eventGuests.map((guest) => convertEventGuest(guest)) // 登録時アンケートを整形
 }
@@ -135,8 +146,11 @@ export const updateEventGuest = async (
   id: string,
   data: Prisma.LumaEventGuestUpdateInput,
 ) => {
-  return prisma.lumaEventGuest.update({
+  const ret = await prisma.lumaEventGuest.update({
     where: { id },
     data,
   })
+
+  lru.clear()
+  return ret
 }
