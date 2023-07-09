@@ -63,24 +63,19 @@ export const upsertLumaEventGuests = async (guests: LumaApiGuest[]) => {
 export const convertEventGuest = (
   guest: LumaEventGuest & { lumaUser: LumaUser },
 ) => {
-  const { registrationAnswers, demo, ...rest } = guest
+  const { registrationAnswers, demo, vector, lumaUser, ...rest } = guest
   const answers = registrationAnswers as {
     label: string
     answer: string
     question_id: string
     question_type: string
   }[]
+  const { email, ...lumaUserRest } = lumaUser
 
   return {
     ...rest,
+    lumaUser: { ...lumaUserRest },
     answers: {
-      fullName: answers.find(
-        (answer) => answer.label === '氏名 (ビル入館に必要: フルネーム)',
-      )?.answer,
-      company: answers.find(
-        (answer) =>
-          answer.label === '所属 (ビル入館に必要: 企業名またはフリーランス等)',
-      )?.answer,
       demo: demo
         ? demo
         : answers.find(
