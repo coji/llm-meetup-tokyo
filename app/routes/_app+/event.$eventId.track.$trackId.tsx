@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardBody,
-  Flex,
   HStack,
   Heading,
   Stack,
@@ -108,9 +107,8 @@ export default function DemoTrackDetailPage() {
             <Box rounded="md" border="1px solid" borderColor="gray.200">
               {presenters.map((presenter, idx) => {
                 return (
-                  <Flex
+                  <Stack
                     key={`${idx}-${presenter.id}`}
-                    direction={{ base: 'column', md: 'row' }}
                     gap={{ base: '0', md: '2' }}
                     _hover={{ bg: 'gray.100', cursor: 'pointer' }}
                     py="2"
@@ -137,7 +135,7 @@ export default function DemoTrackDetailPage() {
                       demo={presenter.answers.demo}
                       clusterIndex={presenter.clusterIndex ?? undefined}
                     />
-                  </Flex>
+                  </Stack>
                 )
               })}
             </Box>

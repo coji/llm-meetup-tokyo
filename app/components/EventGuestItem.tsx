@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   HStack,
+  Stack,
   Tag,
   Text,
   type FlexProps,
@@ -23,7 +24,7 @@ export const EventGuestItem = ({
   clusterIndex,
 }: EventGuestItemProps) => {
   return (
-    <>
+    <Stack direction={{ base: 'column', md: 'row' }}>
       <HStack w={{ base: 'auto', md: '16rem' }} gap="4">
         <Avatar size="sm" src={avatarUrl}></Avatar>
         <Box>
@@ -59,6 +60,6 @@ export const EventGuestItem = ({
           <Text>クラスタ</Text> <Tag>{clusterIndex}</Tag>
         </HStack>
       )}
-    </>
+    </Stack>
   )
 }

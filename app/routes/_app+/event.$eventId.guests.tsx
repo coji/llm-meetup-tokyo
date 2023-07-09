@@ -114,7 +114,7 @@ export default function EventDetailPage() {
           <Box rounded="md" border="1px solid" borderColor="gray.200">
             {guests.map((guest, idx) => {
               return (
-                <Flex
+                <Stack
                   key={guest.id}
                   gap={{ base: '0', md: '2' }}
                   _hover={{ bg: 'gray.100', cursor: 'pointer' }}
@@ -138,7 +138,7 @@ export default function EventDetailPage() {
                     demo={guest.answers.demo}
                     clusterIndex={guest.clusterIndex ?? undefined}
                   />
-                </Flex>
+                </Stack>
               )
             })}
           </Box>
