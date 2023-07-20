@@ -58,7 +58,9 @@ export const updateDemoTrack = async (
   id: number,
   data: Prisma.DemoTrackUpdateInput,
 ) => {
-  await prisma.demoTrack.update({ where: { id }, data })
+  const ret = await prisma.demoTrack.update({ where: { id }, data })
+  lru.clear()
+  return ret
 }
 
 export const createDemoTrack = async (
