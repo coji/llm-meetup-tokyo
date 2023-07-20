@@ -1,6 +1,5 @@
-import { Prisma } from '@prisma/client'
 import kmeans from 'skmeans'
-import { prisma } from '~/services/database.server'
+import { prisma, Prisma } from '~/services/database.server'
 import { lru } from '~/services/lru-cache.server'
 
 export const clusterEventGuests = async (eventId: string, clusterNum = 3) => {

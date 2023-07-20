@@ -1,5 +1,9 @@
-import type { LumaEventGuest, LumaUser, Prisma } from '@prisma/client'
 import { cachified } from 'cachified'
+import type {
+  LumaEventGuest,
+  LumaUser,
+  Prisma,
+} from '~/services/database.server'
 import { prisma } from '~/services/database.server'
 import { lru } from '~/services/lru-cache.server'
 import { type LumaApiGuest } from '~/services/luma.server'

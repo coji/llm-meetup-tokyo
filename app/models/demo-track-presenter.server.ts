@@ -1,5 +1,4 @@
-import type { DemoTrack } from '@prisma/client'
-import { prisma } from '~/services/database.server'
+import { prisma, type DemoTrack } from '~/services/database.server'
 import { convertEventGuest } from './luma-event-guest.server'
 
 export const listDemoTrackPresenters = async (trackId: DemoTrack['id']) => {
