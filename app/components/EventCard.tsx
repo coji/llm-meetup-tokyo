@@ -16,9 +16,9 @@ import {
   Text,
   type CardProps,
 } from '@chakra-ui/react'
-import type { LumaEvent } from '@prisma/client'
 import { Link as RemixLink, useNavigate } from '@remix-run/react'
 import { RiMapPinLine, RiTeamLine } from 'react-icons/ri'
+import type { LumaEvent } from '~/services/database.server'
 import dayjs from '~/utils/dayjs'
 import { AppLinkButton } from './AppLinkButton'
 

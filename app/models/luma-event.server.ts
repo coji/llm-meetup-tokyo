@@ -1,6 +1,5 @@
-import type { LumaEvent, Prisma } from '@prisma/client'
 import { cachified } from 'cachified'
-import { prisma } from '~/services/database.server'
+import { prisma, type LumaEvent, type Prisma } from '~/services/database.server'
 import { lru } from '~/services/lru-cache.server'
 
 export const listLumaEvents = async () => {

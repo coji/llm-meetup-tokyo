@@ -1,10 +1,10 @@
+import { cachified } from 'cachified'
 import type {
   DemoTrack,
   LumaEvent,
   LumaEventGuest,
   Prisma,
-} from '@prisma/client'
-import { cachified } from 'cachified'
+} from '~/services/database.server'
 import { prisma } from '~/services/database.server'
 import { lru } from '~/services/lru-cache.server'
 import { convertEventGuest } from './luma-event-guest.server'

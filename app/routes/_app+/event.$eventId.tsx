@@ -1,5 +1,4 @@
 import { Stack } from '@chakra-ui/react'
-import type { LumaEvent } from '@prisma/client'
 import { type LoaderArgs } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
@@ -7,6 +6,7 @@ import { z } from 'zod'
 import { zx } from 'zodix'
 import { EventCard } from '~/components/EventCard'
 import { getEventById } from '~/models'
+import type { LumaEvent } from '~/services/database.server'
 
 export const handle = {
   breadcrumb: ({ event }: { event: LumaEvent }) => ({

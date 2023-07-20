@@ -8,7 +8,6 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import type { DemoTrack } from '@prisma/client'
 import type { LoaderArgs } from '@remix-run/node'
 import { Outlet, Link as RemixLink, useNavigate } from '@remix-run/react'
 import { GiPlayerNext } from 'react-icons/gi'
@@ -19,6 +18,7 @@ import { zx } from 'zodix'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
 import { EventGuestItem } from '~/components/EventGuestItem'
 import { getEventDemoTrack, listDemoTrackPresenters } from '~/models'
+import type { DemoTrack } from '~/services/database.server'
 
 export const handle = {
   breadcrumb: ({

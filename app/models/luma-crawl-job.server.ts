@@ -1,5 +1,8 @@
-import { type LumaCrawlState, type LumaEvent } from '@prisma/client'
-import { prisma } from '~/services/database.server'
+import {
+  prisma,
+  type LumaCrawlState,
+  type LumaEvent,
+} from '~/services/database.server'
 
 /**
  * Luma クロールジョブが実行中かどうか
