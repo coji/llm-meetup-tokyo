@@ -1,4 +1,3 @@
-import { AddIcon, DownloadIcon } from '@chakra-ui/icons'
 import {
   Box,
   Card,
@@ -47,10 +46,7 @@ export default function EventDetailPage() {
                 Demo Tracks
               </Heading>
               <Spacer />
-              <AppLinkButton
-                to={`/event/${eventId}/guests/track/add`}
-                rightIcon={<AddIcon />}
-              >
+              <AppLinkButton to={`/event/${eventId}/guests/track/add`}>
                 Add
               </AppLinkButton>
             </HStack>
@@ -60,7 +56,6 @@ export default function EventDetailPage() {
                 {demoTracks.map((demoTrack) => (
                   <DemoTrackCard
                     key={demoTrack.id}
-                    flex="1"
                     eventId={eventId}
                     trackId={demoTrack.id}
                     title={demoTrack.title}
@@ -102,11 +97,7 @@ export default function EventDetailPage() {
               Guests
             </Heading>
             <Spacer />
-            <AppLinkButton
-              to={`/event/${eventId}/download`}
-              isExternal
-              rightIcon={<DownloadIcon />}
-            >
+            <AppLinkButton to={`/event/${eventId}/download`} isExternal>
               Download
             </AppLinkButton>
           </HStack>

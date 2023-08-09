@@ -53,7 +53,6 @@ export default function DemoTrackDetailPage() {
   return (
     <Stack>
       <DemoTrackCard
-        flex="1"
         eventId={eventId}
         trackId={demoTrack.id}
         title={demoTrack.title}
