@@ -43,7 +43,7 @@ export default function LoginPage() {
   const returnTo = new URLSearchParams(location.search).get('returnTo')
 
   return (
-    <Center>
+    <Center h="full">
       <Card>
         <CardHeader pb="0">
           <Heading size="md">サインイン</Heading>

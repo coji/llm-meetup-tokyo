@@ -12,9 +12,8 @@ export const AppHeader = ({ title, to, ...rest }: AppHeaderProps) => {
       <Heading className="py-2 text-center">
         <Link to={to}>{title}</Link>
       </Heading>
-
       <Spacer />
-      <AppLoginPane py="2" />
+      <AppLoginPane />
     </div>
   )
 }

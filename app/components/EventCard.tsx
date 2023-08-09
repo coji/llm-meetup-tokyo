@@ -150,11 +150,7 @@ export const EventCard = ({
             </Stack>
 
             <HStack flexWrap="wrap">
-              <AppLinkButton
-                to={event.url}
-                isExternal
-                rightIcon={<ExternalLinkIcon />}
-              >
+              <AppLinkButton to={event.url} variant="outline" isExternal>
                 Luma Event Page
               </AppLinkButton>
 

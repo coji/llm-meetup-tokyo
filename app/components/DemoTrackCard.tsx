@@ -1,27 +1,30 @@
-import { SettingsIcon } from '@chakra-ui/icons'
 import {
-  Avatar,
-  Badge,
   Box,
-  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Center,
-  HStack,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Spacer,
-  Stack,
   Text,
   type CardProps,
 } from '@chakra-ui/react'
+import { GearIcon } from '@radix-ui/react-icons'
 import { Link as RemixLink, useNavigate } from '@remix-run/react'
 import Linkify from 'linkify-react'
 import { match } from 'ts-pattern'
+import {
+  Avatar,
+  AvatarImage,
+  Badge,
+  Button,
+  Center,
+  HStack,
+  Spacer,
+  Stack,
+} from '~/components/ui'
 
 interface DemoTrackMenuItem {
   label: string
@@ -66,11 +69,11 @@ export const DemoTrackCard = ({
   ...rest
 }: DemoTrackCardProps) => {
   const navigate = useNavigate()
-  const stateColor = match(state)
-    .with('In Preparation', () => 'blue')
-    .with('On Live', () => 'red')
-    .with('Finished', () => 'gray')
-    .otherwise(() => 'gray')
+  const stateColorClassNames = match(state)
+    .with('In Preparation', () => 'bg-blue-500 text-white')
+    .with('On Live', () => 'bg-red-500 text-white')
+    .with('Finished', () => 'bg-slate-500 text-white')
+    .otherwise(() => 'text-slate-500')
 
   return (
     <Card
@@ -108,7 +111,7 @@ export const DemoTrackCard = ({
                 _expanded={{ bg: 'card.text.thin', color: 'card.bg.hover' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <SettingsIcon h="3" w="3" />
+                <GearIcon />
               </MenuButton>
               <MenuList>
                 {menu.map((menuItem, idx) => (
@@ -125,9 +128,7 @@ export const DemoTrackCard = ({
             </Menu>
           )}
           <Box>
-            <Badge colorScheme={stateColor} w="full" textAlign="center">
-              {state}
-            </Badge>
+            <Badge className={stateColorClassNames}>{state}</Badge>
           </Box>
         </HStack>
       </CardHeader>
@@ -136,7 +137,9 @@ export const DemoTrackCard = ({
         {presenter ? (
           <Stack>
             <HStack>
-              <Avatar size="lg" src={presenter.avatarUrl} loading="lazy" />
+              <Avatar>
+                <AvatarImage src={presenter.avatarUrl} loading="lazy" />
+              </Avatar>
               <Box>
                 <Text wordBreak="break-word">{presenter.name}</Text>
                 <Text
@@ -176,34 +179,40 @@ export const DemoTrackCard = ({
       <CardFooter borderTop="1px" borderColor="gray.200" justify="end" py="2">
         <HStack>
           <Button
-            as="a"
-            href={zoomUrl}
-            target="_blank"
-            colorScheme="blue"
+            asChild
             aria-label="zoom"
-            px="2"
+            className="px-2"
             onClick={(e) => {
               e.stopPropagation()
               if (!zoomUrl) {
                 e.preventDefault()
               }
             }}
-            variant={zoomUrl ? 'solid' : 'outline'}
-            isDisabled={!zoomUrl}
+            variant="default"
+            disabled={!zoomUrl}
           >
-            Join Zoom
+            <a
+              href={zoomUrl}
+              target="_blank"
+              onClick={(e) => e.stopPropagation()}
+              rel="noreferrer"
+            >
+              Join Zoom
+            </a>
           </Button>
         </HStack>
 
         <Spacer />
 
-        <HStack color="gray.600" fontSize="xs">
+        <HStack className="text-xs">
           <Box>
             <Text color="gray.400" textAlign="right">
               Hosted by
             </Text>
             <HStack>
-              <Avatar size="xs" src={host.avatarUrl} loading="lazy"></Avatar>
+              <Avatar className="h-6 w-6">
+                <AvatarImage src={host.avatarUrl} loading="lazy" />
+              </Avatar>
               <Text noOfLines={1}>{host.name}</Text>
             </HStack>
           </Box>

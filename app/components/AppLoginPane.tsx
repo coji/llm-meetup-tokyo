@@ -1,54 +1,46 @@
-import type { StackProps } from '@chakra-ui/react'
+import { Link } from '@remix-run/react'
 import {
   Avatar,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
-import { Link } from '@remix-run/react'
+  AvatarFallback,
+  AvatarImage,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '~/components/ui'
 import { useSessionUser } from '~/hooks/use-session-user'
 import { AppLinkButton } from './AppLinkButton'
 
-export const AppLoginPane = (props: StackProps) => {
+export const AppLoginPane = () => {
   const user = useSessionUser()
   if (!user) {
     return <AppLinkButton to="/login">Sign In</AppLinkButton>
   }
 
   return (
-    <Stack
-      direction="row"
-      justify="end"
-      align="center"
-      fontSize="sm"
-      color="gray.500"
-      {...props}
-    >
-      <Menu>
-        <MenuButton>
-          <Avatar size="sm" src={user.photoUrl}></Avatar>
-        </MenuButton>
-        <MenuList>
-          <MenuItem>
-            <Stack spacing="0">
-              <Text>{user.displayName}</Text>
-              <Text fontSize="xs">{user.email}</Text>
-            </Stack>
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem as={Link} to="/admin">
-            Admin
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem as={Link} to="/auth/logout">
-            Sign Out
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    </Stack>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Avatar>
+          <AvatarImage src={user.photoUrl}></AvatarImage>
+          <AvatarFallback>{user.displayName}</AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>
+          <p>{user.displayName}</p>
+          <p className="text-xs font-normal">{user.email}</p>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/admin">Admin</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link to="/logout">Sign Out</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
