@@ -1,5 +1,10 @@
 import { ChakraProvider, Progress } from '@chakra-ui/react'
-import { json, type LoaderArgs, type V2_MetaFunction } from '@remix-run/node'
+import {
+  json,
+  type LinksFunction,
+  type LoaderArgs,
+  type V2_MetaFunction,
+} from '@remix-run/node'
 import {
   Links,
   LiveReload,
@@ -12,6 +17,7 @@ import {
 import { createHead } from 'remix-island'
 import { authenticator } from './services/auth.server'
 import { keepAwake } from './services/shrink-to-zero.server'
+import globalStyles from './styles/globals.css'
 import { theme } from './theme'
 
 export const meta: V2_MetaFunction = () => [
@@ -19,6 +25,10 @@ export const meta: V2_MetaFunction = () => [
   { name: 'viewport', content: 'width=device-width,initial-scale=1' },
   { title: 'LLM Meetup Tokyo' },
   { name: 'description', content: 'Meetup Assistant' },
+]
+
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: globalStyles },
 ]
 
 export const loader = async ({ request }: LoaderArgs) => {
