@@ -1,9 +1,9 @@
-import { Button, Card, CardBody, Stack } from '@chakra-ui/react'
 import { type ActionArgs, type LoaderArgs } from '@remix-run/node'
 import { Form, useNavigation } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import { Button, Card, CardContent, Stack } from '~/components/ui'
 import { embedEventGuests } from '~/jobs/embed-event-guests.server'
 import { getEventById } from '~/models'
 import { emitter } from '~/services/emitter.server'
@@ -36,22 +36,20 @@ export default function EventSyncPage() {
   return (
     <Stack>
       <Card>
-        <CardBody>
+        <CardContent>
           <Form method="POST">
             <input type="hidden" name="url" value={event.url}></input>
             <Button
-              w="full"
-              colorScheme="discord"
+              className="w-full"
               type="submit"
-              isLoading={navigation.state === 'submitting'}
-              isDisabled={navigation.state !== 'idle'}
+              disabled={navigation.state !== 'idle'}
             >
               {navigation.state === 'submitting'
                 ? 'Embedding...'
                 : 'Start Embedding'}
             </Button>
           </Form>
-        </CardBody>
+        </CardContent>
       </Card>
     </Stack>
   )
