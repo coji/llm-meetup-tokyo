@@ -1,15 +1,7 @@
-import {
-  Avatar,
-  Box,
-  HStack,
-  Stack,
-  Tag,
-  Text,
-  type FlexProps,
-} from '@chakra-ui/react'
 import Linkify from 'linkify-react'
+import { Avatar, AvatarImage, Badge, HStack, Stack } from '~/components/ui'
 
-interface EventGuestItemProps extends FlexProps {
+interface EventGuestItemProps {
   name: string
   avatarUrl: string
   sns?: string
@@ -24,13 +16,15 @@ export const EventGuestItem = ({
   clusterIndex,
 }: EventGuestItemProps) => {
   return (
-    <Stack direction={{ base: 'column', md: 'row' }}>
-      <HStack w={{ base: 'auto', md: '16rem' }} gap="4">
-        <Avatar size="sm" src={avatarUrl} loading="lazy"></Avatar>
-        <Box>
-          <Text>{name}</Text>
+    <Stack>
+      <HStack className="md:w-16rem w-auto gap-4">
+        <Avatar>
+          <AvatarImage className="h-6 w-6" src={avatarUrl} loading="lazy" />
+        </Avatar>
+        <div>
+          <p>{name}</p>
 
-          <Text fontSize="xs" color="card.text.thin" wordBreak="break-all">
+          <p className="break-all text-xs">
             <Linkify
               options={{
                 defaultProtocol: 'https',
@@ -39,25 +33,19 @@ export const EventGuestItem = ({
             >
               {sns}
             </Linkify>
-          </Text>
-        </Box>
+          </p>
+        </div>
       </HStack>
 
-      <Box
-        flex="1"
-        fontSize="sm"
-        color="card.text.thin"
-        p="1"
-        wordBreak="break-all"
-      >
+      <div className="flex-1 break-all p-1 text-sm">
         <Linkify options={{ defaultProtocol: 'https', target: '_blank' }}>
           {demo}
         </Linkify>
-      </Box>
+      </div>
 
       {clusterIndex !== null && (
-        <HStack fontSize="sm">
-          <Text>クラスタ</Text> <Tag>{clusterIndex}</Tag>
+        <HStack className="text-sm">
+          <p>クラスタ</p> <Badge variant="outline">{clusterIndex}</Badge>
         </HStack>
       )}
     </Stack>
