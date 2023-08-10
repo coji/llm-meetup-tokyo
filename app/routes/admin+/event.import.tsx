@@ -1,18 +1,9 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Stack,
-} from '@chakra-ui/react'
 import { redirect, type ActionArgs } from '@remix-run/node'
 import { Form, useNavigation } from '@remix-run/react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { AppBreadcrumbs } from '~/components'
+import { Button, Card, CardContent, Input, Label, Stack } from '~/components/ui'
 import { runLumaCrawlJob } from '~/jobs/luma-crawl-job.server'
 
 export const action = async ({ request }: ActionArgs) => {
@@ -43,23 +34,18 @@ export default function EventImportPage() {
 
       <Form method="POST">
         <Card>
-          <CardBody>
+          <CardContent>
             <Stack>
-              <FormControl>
-                <FormLabel>URL</FormLabel>
+              <fieldset>
+                <Label>URL</Label>
                 <Input type="text" name="url" defaultValue="https://lu.ma/" />
-                <FormErrorMessage></FormErrorMessage>
-              </FormControl>
+              </fieldset>
 
-              <Button
-                type="submit"
-                isLoading={navigation.state === 'submitting'}
-                isDisabled={navigation.state !== 'idle'}
-              >
+              <Button type="submit" disabled={navigation.state !== 'idle'}>
                 {navigation.state === 'submitting' ? 'Importing...' : 'Import'}
               </Button>
             </Stack>
-          </CardBody>
+          </CardContent>
         </Card>
       </Form>
     </Stack>
