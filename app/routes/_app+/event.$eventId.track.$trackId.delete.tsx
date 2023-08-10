@@ -1,19 +1,17 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spacer,
-} from '@chakra-ui/react'
 import type { ActionArgs } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'
 import { redirect } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Spacer,
+} from '~/components/ui'
 import { deleteDemoTrack } from '~/models'
 import { emitter } from '~/services/emitter.server'
 
@@ -34,16 +32,15 @@ export default function TrackNextPresenterPage() {
     navigate('..')
   }
   return (
-    <Modal isOpen={true} onClose={handleOnClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Delete a Demo Track</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>Demo Track を削除します。よろしいですか？</ModalBody>
-
-        <ModalFooter>
+    <Dialog open onOpenChange={handleOnClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete a Demo Track</DialogTitle>
+        </DialogHeader>
+        <div>Demo Track を削除します。よろしいですか？</div>
+        <DialogFooter>
           <form method="POST">
-            <Button type="submit" colorScheme="red">
+            <Button variant="destructive" type="submit">
               削除
             </Button>
           </form>
@@ -51,8 +48,8 @@ export default function TrackNextPresenterPage() {
           <Button variant="ghost" onClick={handleOnClose}>
             Cancel
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
