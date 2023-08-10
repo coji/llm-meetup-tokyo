@@ -1,26 +1,24 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerOverlay,
-  FormControl,
-  FormLabel,
-  HStack,
-  Heading,
-  Input,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { Form, useNavigate } from '@remix-run/react'
 import dayjs from 'dayjs'
 import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  HStack,
+  Heading,
+  Input,
+  Label,
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTitle,
+  Stack,
+} from '~/components/ui'
 import {
   addLumaEventGuestDemoEditLog,
   getEventGuestById,
@@ -74,73 +72,73 @@ export default function GuestEditPage() {
   const navigate = useNavigate()
 
   return (
-    <Drawer
-      placement="right"
-      size={{ base: 'xs', sm: 'sm' }}
-      isOpen={true}
-      onClose={() => {
+    <Sheet
+      open
+      onOpenChange={() => {
         navigate('..', { preventScrollReset: true })
       }}
     >
-      <DrawerOverlay />
-      <DrawerContent>
-        <DrawerBody>
-          <DrawerCloseButton />
+      <SheetContent>
+        <SheetTitle>{guest.lumaUser.name ?? 'Anonymous'}</SheetTitle>
+        <SheetClose />
 
-          <Stack>
-            <Heading>{guest.lumaUser.name ?? 'Anonymous'}</Heading>
+        <Stack>
+          <Form method="POST">
+            <Stack>
+              <fieldset>
+                <Label htmlFor="demo">
+                  飛び入りデモでどのような内容をお話されたいか教えて下さい。
+                </Label>
+                <Input
+                  id="demo"
+                  name="demo"
+                  defaultValue={guest.answers.demo}
+                ></Input>
+              </fieldset>
 
-            <Form method="POST">
+              <Button type="submit">Submit</Button>
+            </Stack>
+          </Form>
+
+          {editLog.length > 0 && (
+            <Stack className="overflow-auto">
+              <Heading size="sm">編集履歴</Heading>
               <Stack>
-                <FormControl>
-                  <FormLabel>
-                    飛び入りデモでどのような内容をお話されたいか教えて下さい。
-                  </FormLabel>
-                  <Input name="demo" defaultValue={guest.answers.demo}></Input>
-                </FormControl>
+                {editLog.map((log) => (
+                  <HStack key={log.id}>
+                    <Stack>
+                      <p className="text-sm">
+                        {dayjs(log.createdAt).fromNow()}
+                      </p>
+                      <HStack>
+                        <Avatar>
+                          <AvatarImage src={log.user.photoUrl || ''} />
+                          <AvatarFallback>
+                            {' '}
+                            {log.user.displayName}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p>{log.user.displayName}</p>
+                      </HStack>
+                    </Stack>
 
-                <Button type="submit">Submit</Button>
+                    <Stack className="text-xs">
+                      <div>
+                        <p className="font-bold">編集前</p>
+                        <p>{log.oldValue}</p>
+                      </div>
+                      <div>
+                        <p className="font-bold">編集後</p>
+                        <p>{log.newValue}</p>
+                      </div>
+                    </Stack>
+                  </HStack>
+                ))}
               </Stack>
-            </Form>
-
-            {editLog.length > 0 && (
-              <Stack w="full" overflow="auto">
-                <Heading size="sm">編集履歴</Heading>
-                <Stack>
-                  {editLog.map((log) => (
-                    <HStack key={log.id} align="start">
-                      <Stack>
-                        <Text fontSize="sm">
-                          {dayjs(log.createdAt).fromNow()}
-                        </Text>
-                        <HStack>
-                          <Avatar
-                            size="sm"
-                            src={log.user.photoUrl || ''}
-                            name={log.user.displayName}
-                          />
-                          <Text>{log.user.displayName}</Text>
-                        </HStack>
-                      </Stack>
-
-                      <Stack fontSize="xs">
-                        <Box>
-                          <Text fontWeight="bold">編集前</Text>
-                          <Text>{log.oldValue}</Text>
-                        </Box>
-                        <Box>
-                          <Text fontWeight="bold">編集後</Text>
-                          <Text>{log.newValue}</Text>
-                        </Box>
-                      </Stack>
-                    </HStack>
-                  ))}
-                </Stack>
-              </Stack>
-            )}
-          </Stack>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+            </Stack>
+          )}
+        </Stack>
+      </SheetContent>
+    </Sheet>
   )
 }
