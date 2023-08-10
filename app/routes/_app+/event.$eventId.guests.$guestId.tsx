@@ -1,26 +1,24 @@
+import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
+import { Form, useLoaderData, useNavigate } from '@remix-run/react'
+import dayjs from 'dayjs'
+import { z } from 'zod'
+import { zx } from 'zodix'
 import {
   Avatar,
-  Box,
+  AvatarFallback,
+  AvatarImage,
   Button,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerOverlay,
-  FormControl,
-  FormLabel,
   HStack,
   Heading,
   Input,
+  Label,
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTitle,
   Stack,
-  Text,
-} from '@chakra-ui/react'
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
-import { Form, useNavigate } from '@remix-run/react'
-import dayjs from 'dayjs'
-import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson'
-import { z } from 'zod'
-import { zx } from 'zodix'
+} from '~/components/ui'
 import {
   addLumaEventGuestDemoEditLog,
   getEventGuestById,
@@ -37,7 +35,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const guest = await getEventGuestById(guestId)
   const editLog = await listLumaEventGuestDemoEditLogs(guestId)
 
-  return typedjson({ guest, editLog })
+  return json({ guest, editLog })
 }
 
 export const action = async ({ request, params }: ActionArgs) => {
@@ -70,77 +68,70 @@ export const action = async ({ request, params }: ActionArgs) => {
 }
 
 export default function GuestEditPage() {
-  const { guest, editLog } = useTypedLoaderData<typeof loader>()
+  const { guest, editLog } = useLoaderData<typeof loader>()
   const navigate = useNavigate()
 
   return (
-    <Drawer
-      placement="right"
-      size={{ base: 'xs', sm: 'sm' }}
-      isOpen={true}
-      onClose={() => {
+    <Sheet
+      defaultOpen
+      onOpenChange={() => {
         navigate('..', { preventScrollReset: true })
       }}
     >
-      <DrawerOverlay />
-      <DrawerContent>
-        <DrawerBody>
-          <DrawerCloseButton />
+      <SheetContent>
+        <SheetTitle>{guest.lumaUser.name ?? 'Anonymous'}</SheetTitle>
+        <SheetClose />
 
-          <Stack>
-            <Heading>{guest.lumaUser.name ?? 'Anonymous'}</Heading>
+        <Stack>
+          <Form method="POST">
+            <Stack>
+              <fieldset>
+                <Label>
+                  飛び入りデモでどのような内容をお話されたいか教えて下さい。
+                </Label>
+                <Input name="demo" defaultValue={guest.answers.demo}></Input>
+              </fieldset>
 
-            <Form method="POST">
-              <Stack>
-                <FormControl>
-                  <FormLabel>
-                    飛び入りデモでどのような内容をお話されたいか教えて下さい。
-                  </FormLabel>
-                  <Input name="demo" defaultValue={guest.answers.demo}></Input>
-                </FormControl>
+              <Button type="submit">Submit</Button>
+            </Stack>
+          </Form>
 
-                <Button type="submit">Submit</Button>
+          {editLog.length > 0 && (
+            <Stack className="overflow-auto">
+              <Heading size="sm">編集履歴</Heading>
+              <Stack className="text-sm">
+                {editLog.map((log) => (
+                  <Stack key={log.id} direction="row">
+                    <Stack>
+                      <HStack>
+                        <Avatar>
+                          <AvatarImage src={log.user.photoUrl || ''} />
+                          <AvatarFallback>
+                            {log.user.displayName}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p>{log.user.displayName}</p>
+                      </HStack>
+                      <p>{dayjs(log.createdAt).fromNow()}</p>
+                    </Stack>
+
+                    <Stack className="text-xs">
+                      <div>
+                        <p className="font-bold">編集前</p>
+                        <div>{log.oldValue}</div>
+                      </div>
+                      <div>
+                        <p className="font-bold">編集後</p>
+                        <div>{log.newValue}</div>
+                      </div>
+                    </Stack>
+                  </Stack>
+                ))}
               </Stack>
-            </Form>
-
-            {editLog.length > 0 && (
-              <Stack w="full" overflow="auto">
-                <Heading size="sm">編集履歴</Heading>
-                <Stack>
-                  {editLog.map((log) => (
-                    <HStack key={log.id} align="start">
-                      <Stack>
-                        <Text fontSize="sm">
-                          {dayjs(log.createdAt).fromNow()}
-                        </Text>
-                        <HStack>
-                          <Avatar
-                            size="sm"
-                            src={log.user.photoUrl || ''}
-                            name={log.user.displayName}
-                          />
-                          <Text>{log.user.displayName}</Text>
-                        </HStack>
-                      </Stack>
-
-                      <Stack fontSize="xs">
-                        <Box>
-                          <Text fontWeight="bold">編集前</Text>
-                          <Text>{log.oldValue}</Text>
-                        </Box>
-                        <Box>
-                          <Text fontWeight="bold">編集後</Text>
-                          <Text>{log.newValue}</Text>
-                        </Box>
-                      </Stack>
-                    </HStack>
-                  ))}
-                </Stack>
-              </Stack>
-            )}
-          </Stack>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+            </Stack>
+          )}
+        </Stack>
+      </SheetContent>
+    </Sheet>
   )
 }
