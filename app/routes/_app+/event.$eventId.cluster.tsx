@@ -1,17 +1,9 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  FormControl,
-  FormLabel,
-  Input,
-  Stack,
-} from '@chakra-ui/react'
 import { type ActionArgs, type LoaderArgs } from '@remix-run/node'
 import { Form, useNavigation } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import { Button, Card, CardContent, Input, Label, Stack } from '~/components/ui'
 import { clusterEventGuests } from '~/jobs/cluster-event-guests.server'
 import { getEventById } from '~/models'
 import { emitter } from '~/services/emitter.server'
@@ -44,22 +36,20 @@ export default function EventSyncPage() {
   return (
     <Stack>
       <Card>
-        <CardBody>
+        <CardContent>
           <Form method="POST">
             <input type="hidden" name="url" value={event.url}></input>
 
             <Stack>
-              <FormControl>
-                <FormLabel>クラスタ数</FormLabel>
+              <fieldset>
+                <Label>クラスタ数</Label>
                 <Input type="number" name="clusterNum" defaultValue={3}></Input>
-              </FormControl>
+              </fieldset>
 
               <Button
-                w="full"
-                colorScheme="discord"
+                className="w-full"
                 type="submit"
-                isLoading={navigation.state === 'submitting'}
-                isDisabled={navigation.state !== 'idle'}
+                disabled={navigation.state !== 'idle'}
               >
                 {navigation.state === 'submitting'
                   ? 'Clustering...'
@@ -67,7 +57,7 @@ export default function EventSyncPage() {
               </Button>
             </Stack>
           </Form>
-        </CardBody>
+        </CardContent>
       </Card>
     </Stack>
   )

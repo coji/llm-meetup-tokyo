@@ -1,10 +1,10 @@
-import { Stack } from '@chakra-ui/react'
 import { type LoaderArgs } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { EventCard } from '~/components/EventCard'
+import { Stack } from '~/components/ui'
 import { getEventById } from '~/models'
 import type { LumaEvent } from '~/services/database.server'
 

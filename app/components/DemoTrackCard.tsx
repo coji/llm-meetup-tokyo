@@ -1,27 +1,25 @@
-import { SettingsIcon } from '@chakra-ui/icons'
+import { GearIcon } from '@radix-ui/react-icons'
+import { Link, useNavigate } from '@remix-run/react'
+import Linkify from 'linkify-react'
+import { match } from 'ts-pattern'
 import {
   Avatar,
+  AvatarImage,
   Badge,
-  Box,
   Button,
   Card,
-  CardBody,
+  CardContent,
   CardFooter,
   CardHeader,
   Center,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   HStack,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Spacer,
   Stack,
-  Text,
-  type CardProps,
-} from '@chakra-ui/react'
-import { Link as RemixLink, useNavigate } from '@remix-run/react'
-import Linkify from 'linkify-react'
-import { match } from 'ts-pattern'
+} from '~/components/ui'
 
 interface DemoTrackMenuItem {
   label: string
@@ -40,7 +38,7 @@ interface DemoTrackHost {
   avatarUrl: string
 }
 
-interface DemoTrackCardProps extends CardProps {
+interface DemoTrackCardProps {
   eventId: string
   trackId: number
   title: string
@@ -66,22 +64,15 @@ export const DemoTrackCard = ({
   ...rest
 }: DemoTrackCardProps) => {
   const navigate = useNavigate()
-  const stateColor = match(state)
-    .with('In Preparation', () => 'blue')
-    .with('On Live', () => 'red')
-    .with('Finished', () => 'gray')
-    .otherwise(() => 'gray')
+  const stateColorClassNames = match(state)
+    .with('In Preparation', () => 'bg-blue-500 text-white')
+    .with('On Live', () => 'bg-red-500 text-white')
+    .with('Finished', () => 'bg-slate-500 text-white')
+    .otherwise(() => 'text-slate-500')
 
   return (
     <Card
-      minW="300px"
-      variant="outline"
-      color="card.text.base"
-      bg="card.bg.base"
-      _hover={{
-        cursor: to ? 'pointer' : 'default',
-        bg: to ? 'card.bg.highlight' : 'default',
-      }}
+      className="min-w-[300px] flex-1 cursor-pointer hover:shadow-lg"
       onClick={() => {
         if (to) {
           navigate(to)
@@ -89,61 +80,48 @@ export const DemoTrackCard = ({
       }}
       {...rest}
     >
-      <CardHeader pb="0">
+      <CardHeader className="pb-0">
         <HStack>
-          <Text color="gray.400" fontWeight="bold">
-            {title}
-          </Text>
+          <p className="font-bold">{title}</p>
           <Spacer />
 
           {menu && (
-            <Menu>
-              <MenuButton
-                px={2}
-                py={0}
-                transition="all 0.2s"
-                borderRadius="md"
-                color="card.text.thin"
-                _hover={{ bg: 'card.text.thin', color: 'card.bg.hover' }}
-                _expanded={{ bg: 'card.text.thin', color: 'card.bg.hover' }}
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className="rounded"
                 onClick={(e) => e.stopPropagation()}
               >
-                <SettingsIcon h="3" w="3" />
-              </MenuButton>
-              <MenuList>
+                <GearIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
                 {menu.map((menuItem, idx) => (
-                  <MenuItem
-                    as={RemixLink}
-                    to={menuItem.to}
+                  <DropdownMenuItem
+                    asChild
                     key={idx}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {menuItem.label}
-                  </MenuItem>
+                    <Link to={menuItem.to}>{menuItem.label}</Link>
+                  </DropdownMenuItem>
                 ))}
-              </MenuList>
-            </Menu>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
-          <Box>
-            <Badge colorScheme={stateColor} w="full" textAlign="center">
-              {state}
-            </Badge>
-          </Box>
+          <div>
+            <Badge className={stateColorClassNames}>{state}</Badge>
+          </div>
         </HStack>
       </CardHeader>
 
-      <CardBody pt="2">
+      <CardContent className="pt-2">
         {presenter ? (
           <Stack>
             <HStack>
-              <Avatar size="lg" src={presenter.avatarUrl} loading="lazy" />
-              <Box>
-                <Text wordBreak="break-word">{presenter.name}</Text>
-                <Text
-                  fontSize="xs"
-                  noOfLines={1}
-                  onClick={(e) => e.stopPropagation()}
-                >
+              <Avatar>
+                <AvatarImage src={presenter.avatarUrl} loading="lazy" />
+              </Avatar>
+              <div>
+                <p className="break-words">{presenter.name}</p>
+                <p className="text-xs " onClick={(e) => e.stopPropagation()}>
                   <Linkify
                     options={{
                       defaultProtocol: 'https',
@@ -152,62 +130,55 @@ export const DemoTrackCard = ({
                   >
                     {presenter.sns}
                   </Linkify>
-                </Text>
-              </Box>
+                </p>
+              </div>
               <Spacer />
               {children}
             </HStack>
-            <Text
-              rounded="md"
-              fontSize="md"
-              bg="gray.100"
-              p="4"
-              color="gray.600"
-              wordBreak="break-word"
-            >
-              {presenter.demo}
-            </Text>
+            <p className="text-md break-words rounded p-4">{presenter.demo}</p>
           </Stack>
         ) : (
           <Center>{children}</Center>
         )}
-      </CardBody>
+      </CardContent>
 
-      <CardFooter borderTop="1px" borderColor="gray.200" justify="end" py="2">
+      <CardFooter className="justify-end py-2">
         <HStack>
           <Button
-            as="a"
-            href={zoomUrl}
-            target="_blank"
-            colorScheme="blue"
+            asChild
             aria-label="zoom"
-            px="2"
+            className="px-2"
             onClick={(e) => {
               e.stopPropagation()
               if (!zoomUrl) {
                 e.preventDefault()
               }
             }}
-            variant={zoomUrl ? 'solid' : 'outline'}
-            isDisabled={!zoomUrl}
+            variant="default"
+            disabled={!zoomUrl}
           >
-            Join Zoom
+            <a
+              href={zoomUrl}
+              target="_blank"
+              onClick={(e) => e.stopPropagation()}
+              rel="noreferrer"
+            >
+              Join Zoom
+            </a>
           </Button>
         </HStack>
 
         <Spacer />
 
-        <HStack color="gray.600" fontSize="xs">
-          <Box>
-            <Text color="gray.400" textAlign="right">
-              Hosted by
-            </Text>
-            <HStack>
-              <Avatar size="xs" src={host.avatarUrl} loading="lazy"></Avatar>
-              <Text noOfLines={1}>{host.name}</Text>
-            </HStack>
-          </Box>
-        </HStack>
+        <div className="text-xs">
+          <p className="text-right">Hosted by</p>
+          <HStack>
+            <Avatar className="h-6 w-6">
+              <AvatarImage src={host.avatarUrl} loading="lazy" />
+            </Avatar>
+            <p>{host.name}</p>
+          </HStack>
+        </div>
       </CardFooter>
     </Card>
   )

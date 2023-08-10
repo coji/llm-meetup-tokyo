@@ -1,14 +1,14 @@
-import { Card, CardBody, Stack } from '@chakra-ui/react'
 import { AppLinkButton } from '~/components'
+import { Card, CardContent, Stack } from '~/components/ui'
 
 export default function AdminIndex() {
   return (
     <Card>
-      <CardBody>
+      <CardContent>
         <Stack>
           <AppLinkButton to="event/import">Import Luma Event</AppLinkButton>
         </Stack>
-      </CardBody>
+      </CardContent>
     </Card>
   )
 }

@@ -1,23 +1,25 @@
-import { Link, Stack } from '@chakra-ui/react'
+import { HStack } from '~/components/ui'
 
 export const AppFooter = () => {
   return (
-    <Stack p="4" direction={{ base: 'column', md: 'row' }} justify="center">
-      <Link
-        href="https://github.com/coji/llm-meetup-tokyo"
-        isExternal
-        rel="noreferrer"
-      >
-        GitHub
-      </Link>
+    <div className="flex justify-center bg-background p-4 text-sm text-foreground">
+      <HStack>
+        <a
+          href="https://github.com/coji/llm-meetup-tokyo"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
 
-      <Link
-        href="https://discord.com/channels/1083356163074170950"
-        isExternal
-        rel="noreferrer"
-      >
-        Discord
-      </Link>
-    </Stack>
+        <a
+          href="https://discord.com/channels/1083356163074170950"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Discord
+        </a>
+      </HStack>
+    </div>
   )
 }

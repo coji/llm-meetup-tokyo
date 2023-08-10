@@ -1,20 +1,25 @@
+import { json, type LoaderArgs } from '@remix-run/node'
+import { useLoaderData, useLocation } from '@remix-run/react'
+import { AppSignInButton } from '~/components/AppSignInButton'
 import {
   Alert,
-  AlertIcon,
-  Box,
+  AlertDescription,
+  AlertTitle,
   Card,
-  CardBody,
+  CardContent,
   CardHeader,
   Center,
   Heading,
   Stack,
-  Text,
-} from '@chakra-ui/react'
-import { json, type LoaderArgs } from '@remix-run/node'
-import { useLoaderData, useLocation } from '@remix-run/react'
-import { AppSignInButton } from '~/components/AppSignInButton'
+} from '~/components/ui'
 import { authenticator } from '~/services/auth.server'
 import { returnToCookie, sessionStorage } from '~/services/session.server'
+
+export const handle = {
+  breadcrumb: () => ({
+    label: 'サインイン',
+  }),
+}
 
 export const loader = async ({ request }: LoaderArgs) => {
   const headers = new Headers()
@@ -43,32 +48,29 @@ export default function LoginPage() {
   const returnTo = new URLSearchParams(location.search).get('returnTo')
 
   return (
-    <Center>
-      <Card>
-        <CardHeader pb="0">
+    <Center className="h-full">
+      <Card className="max-w-md">
+        <CardHeader>
           <Heading size="md">サインイン</Heading>
         </CardHeader>
-        <CardBody maxW="sm">
+        <CardContent>
           <Stack>
             {returnTo && (
-              <Text>
+              <p className="text-sm">
                 このページを閲覧するには LLM Meetup Tokyo サーバに参加している
-                Discord アカウントのサインインが必要です。
-              </Text>
+                Discord アカウントでのサインインが必要です。
+              </p>
             )}
             <AppSignInButton />
 
             {errorMessage && (
-              <Alert variant="solid" rounded="md" status="error">
-                <AlertIcon />
-                <Box textAlign="left">
-                  <Text fontWeight="bold">ログインできません</Text>
-                  <Text>{errorMessage}</Text>
-                </Box>
+              <Alert>
+                <AlertTitle>サインインできません</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
               </Alert>
             )}
           </Stack>
-        </CardBody>
+        </CardContent>
       </Card>
     </Center>
   )

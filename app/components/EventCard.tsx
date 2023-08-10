@@ -1,23 +1,17 @@
-import { ExternalLinkIcon, SettingsIcon } from '@chakra-ui/icons'
+import { ExternalLinkIcon, GearIcon } from '@radix-ui/react-icons'
+import { Link, useNavigate } from '@remix-run/react'
+import { RiMapPinLine, RiTeamLine } from 'react-icons/ri'
 import {
-  Box,
   Card,
-  CardBody,
-  Grid,
+  CardContent,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   HStack,
   Heading,
-  Image,
-  Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Stack,
-  Text,
-  type CardProps,
-} from '@chakra-ui/react'
-import { Link as RemixLink, useNavigate } from '@remix-run/react'
-import { RiMapPinLine, RiTeamLine } from 'react-icons/ri'
+} from '~/components/ui'
 import type { LumaEvent } from '~/services/database.server'
 import dayjs from '~/utils/dayjs'
 import { AppLinkButton } from './AppLinkButton'
@@ -27,7 +21,7 @@ interface EventCardMenuItem {
   to: string
 }
 
-interface EventCardProps extends CardProps {
+interface EventCardProps {
   to?: string
   event: LumaEvent
   menu?: EventCardMenuItem[]
@@ -43,126 +37,95 @@ export const EventCard = ({
   const navigate = useNavigate()
   return (
     <Card
-      color="card.text.base"
-      bg="card.bg.base"
-      _hover={{ cursor: to ? 'pointer' : 'default', bg: 'card.bg.hover' }}
+      className="cursor-pointer hover:shadow-lg"
       onClick={() => {
         if (to) {
           navigate(to)
         }
       }}
-      {...rest}
     >
-      <CardBody>
-        <Grid
-          gridTemplateRows={{ base: 'auto 1fr', md: '1fr' }}
-          gridTemplateColumns={{ base: '1fr', md: 'auto 1fr' }}
-          gap="4"
-        >
-          <Image
-            w={{ base: 'full', md: '64' }}
-            rounded="md"
-            objectFit="cover"
+      <CardContent className="p-4">
+        <div className="grid grid-cols-[1fr] grid-rows-[auto_1fr] gap-4 md:grid-cols-[auto_1fr] md:grid-rows-[1fr]">
+          <img
+            className="h-64 w-full rounded-md object-cover md:h-full md:w-64"
             src={event.coverUrl}
             alt={event.name}
             loading="lazy"
           />
 
-          <Stack spacing="2">
+          <Stack className="gap-2">
             {/* Heading */}
-            <HStack align="start">
-              <Box flex="1">
-                <Text fontSize="sm">
+            <HStack>
+              <div className="flex-1">
+                <p className="text-sm">
                   {dayjs(event.startAt)
                     .tz('Asia/Tokyo')
                     .format('M月D日 dddd HH:mm')}
-                </Text>
+                </p>
                 <Heading size="md">{event.name}</Heading>
-              </Box>
+              </div>
 
               {menu && (
-                <Menu>
-                  <MenuButton
-                    px={2}
-                    py={0}
-                    transition="all 0.2s"
-                    borderRadius="md"
-                    color="card.text.thin"
-                    _hover={{ bg: 'card.text.thin', color: 'white' }}
-                    _expanded={{ bg: 'card.text.thin', color: 'white' }}
-                    _focus={{ boxShadow: 'outline' }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <SettingsIcon h="3" w="3" />
-                  </MenuButton>
-                  <MenuList>
+                <DropdownMenu>
+                  <DropdownMenuTrigger onClick={(e) => e.stopPropagation()}>
+                    <GearIcon />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
                     {menu.map((menuItem, idx) => (
-                      <MenuItem
-                        as={RemixLink}
-                        to={menuItem.to}
+                      <DropdownMenuItem
+                        asChild
                         key={idx}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {menuItem.label}
-                      </MenuItem>
+                        <Link to={menuItem.to}>{menuItem.label}</Link>
+                      </DropdownMenuItem>
                     ))}
-                  </MenuList>
-                </Menu>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </HStack>
 
             {/* Guests and Geo */}
-            <Stack fontSize="sm" gap={{ base: '2', md: '4' }} direction="row">
+            <HStack className="gap-2 text-sm md:gap-4">
               <HStack>
-                <Box
-                  rounded="md"
-                  border="1px"
-                  borderColor="card.text.thin"
-                  p="2"
-                >
+                <div className="rounded border p-2">
                   <RiTeamLine />
-                </Box>
-                <Text>{event.guestCount} Guests</Text>
+                </div>
+                <p>{event.guestCount} Guests</p>
               </HStack>
 
               <HStack>
-                <Box
-                  rounded="md"
-                  border="1px"
-                  borderColor="card.text.thin"
-                  p="2"
-                >
+                <div className="rounded border p-2">
                   <RiMapPinLine />
-                </Box>
-                <Box>
-                  <Link
+                </div>
+                <div>
+                  <a
+                    className="hover:underline"
                     href={`https://www.google.com/maps/search/?api=1&query=${event.geoAddress}&query_place_id=${event.geoPlaceId}`}
-                    isExternal
+                    target="_blank"
                     onClick={(e) => e.stopPropagation()}
+                    rel="noreferrer"
                   >
-                    <Text>
-                      {event.geoAddress} <ExternalLinkIcon />
-                    </Text>
-                    <Text fontSize="xs">{event.geoCityState}</Text>
-                  </Link>
-                </Box>
+                    <p>
+                      {event.geoAddress}{' '}
+                      <ExternalLinkIcon className="h-3 w-3" />
+                    </p>
+                    <p className="text-xs">{event.geoCityState}</p>
+                  </a>
+                </div>
               </HStack>
-            </Stack>
+            </HStack>
 
-            <HStack flexWrap="wrap">
-              <AppLinkButton
-                to={event.url}
-                isExternal
-                rightIcon={<ExternalLinkIcon />}
-              >
-                Luma Event Page
+            <HStack className="flex-wrap">
+              <AppLinkButton to={event.url} variant="outline" isExternal>
+                Luma Event Page <ExternalLinkIcon className="ml-2" />
               </AppLinkButton>
 
               {children}
             </HStack>
           </Stack>
-        </Grid>
-      </CardBody>
+        </div>
+      </CardContent>
     </Card>
   )
 }

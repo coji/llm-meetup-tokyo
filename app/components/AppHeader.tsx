@@ -1,27 +1,21 @@
-import type { FlexProps } from '@chakra-ui/react'
-import { Flex, Heading, Spacer } from '@chakra-ui/react'
 import { Link } from '@remix-run/react'
+import { Heading, Spacer } from '~/components/ui'
 import { AppLoginPane } from './AppLoginPane'
 
-interface AppHeaderProps extends FlexProps {
+interface AppHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   to: string
   title: string
 }
 export const AppHeader = ({ title, to, ...rest }: AppHeaderProps) => {
   return (
-    <Flex {...rest} align="center">
-      <Heading
-        as={Link}
-        to={to}
-        size={{ base: 'md', md: 'lg' }}
-        py="2"
-        textAlign="center"
-      >
-        {title}
-      </Heading>
-
-      <Spacer />
-      <AppLoginPane py="2" />
-    </Flex>
+    <header className="bg-background text-foreground " {...rest}>
+      <div className="container flex items-center ">
+        <Heading className="py-2 text-center">
+          <Link to={to}>{title}</Link>
+        </Heading>
+        <Spacer />
+        <AppLoginPane />
+      </div>
+    </header>
   )
 }

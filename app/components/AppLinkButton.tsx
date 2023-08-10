@@ -1,10 +1,10 @@
-import { Button, type ButtonProps } from '@chakra-ui/react'
-import { Link as RemixLink } from '@remix-run/react'
+import { Link } from '@remix-run/react'
+import { Button, type ButtonProps } from '~/components/ui'
 
 interface AppLinkButtonProps extends ButtonProps {
   to: string
   isExternal?: boolean
-  chlidren?: React.ReactNode
+  children?: React.ReactNode
 }
 export const AppLinkButton = ({
   to,
@@ -15,34 +15,29 @@ export const AppLinkButton = ({
   if (isExternal) {
     return (
       <Button
-        as="a"
-        href={to}
-        target="_blank"
-        w="auto"
+        asChild
         size="sm"
-        _hover={{ bg: 'gray.600', color: 'white' }}
         onClick={(e) => {
           e.stopPropagation()
         }}
         {...rest}
       >
-        {children}
+        <a href={to} target="_blank" rel="noreferrer">
+          {children}
+        </a>
       </Button>
     )
   } else {
     return (
       <Button
-        as={RemixLink}
-        to={to}
-        w="auto"
+        asChild
         size="sm"
-        _hover={{ bg: 'gray.600', color: 'white' }}
         onClick={(e) => {
           e.stopPropagation()
         }}
         {...rest}
       >
-        {children}
+        <Link to={to}>{children}</Link>
       </Button>
     )
   }

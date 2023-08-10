@@ -1,23 +1,18 @@
-import { AddIcon, DownloadIcon } from '@chakra-ui/icons'
-import {
-  Box,
-  Card,
-  CardBody,
-  Flex,
-  HStack,
-  Heading,
-  Spacer,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
-import { type LoaderArgs } from '@remix-run/node'
-import { Outlet, useNavigate } from '@remix-run/react'
-import { typedjson, useTypedLoaderData } from 'remix-typedjson'
+import { json, type LoaderArgs } from '@remix-run/node'
+import { Outlet, useLoaderData, useNavigate } from '@remix-run/react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { AppLinkButton } from '~/components'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
 import { EventGuestItem } from '~/components/EventGuestItem'
+import {
+  Card,
+  CardContent,
+  Heading,
+  HStack,
+  Spacer,
+  Stack,
+} from '~/components/ui'
 import { useEventUpdater } from '~/hooks/use-event-updater'
 import { listEventDemoTracks, listEventGuests } from '~/models'
 
@@ -29,38 +24,34 @@ export const loader = async ({ params }: LoaderArgs) => {
   const guests = await listEventGuests(eventId)
   const demoTracks = await listEventDemoTracks(eventId)
 
-  return typedjson({ eventId, guests, demoTracks })
+  return json({ eventId, guests, demoTracks })
 }
 
 export default function EventDetailPage() {
-  const { eventId, guests, demoTracks } = useTypedLoaderData<typeof loader>()
+  const { eventId, guests, demoTracks } = useLoaderData<typeof loader>()
   const navigate = useNavigate()
   useEventUpdater() // イベント関連情報が更新されたら自動でデータを読み直す
 
   return (
     <Stack>
       <Card>
-        <CardBody>
+        <CardContent>
           <Stack>
-            <HStack align="start">
-              <Heading size="md" mb="4">
+            <HStack>
+              <Heading className="mb-4" size="md">
                 Demo Tracks
               </Heading>
               <Spacer />
-              <AppLinkButton
-                to={`/event/${eventId}/guests/track/add`}
-                rightIcon={<AddIcon />}
-              >
+              <AppLinkButton to={`/event/${eventId}/guests/track/add`}>
                 Add
               </AppLinkButton>
             </HStack>
 
             {demoTracks.length > 0 ? (
-              <Flex flexWrap="wrap" gap="4">
+              <div className="flex flex-wrap gap-4">
                 {demoTracks.map((demoTrack) => (
                   <DemoTrackCard
                     key={demoTrack.id}
-                    flex="1"
                     eventId={eventId}
                     trackId={demoTrack.id}
                     title={demoTrack.title}
@@ -85,46 +76,36 @@ export default function EventDetailPage() {
                     to={`/event/${eventId}/track/${demoTrack.id}`}
                   />
                 ))}
-              </Flex>
+              </div>
             ) : (
-              <Text textAlign="center" color="gray.500">
-                No demo tracks yet.
-              </Text>
+              <p className="text-center text-slate-500">No demo tracks yet.</p>
             )}
           </Stack>
-        </CardBody>
+        </CardContent>
       </Card>
 
       <Card>
-        <CardBody px="4">
-          <HStack align="start">
-            <Heading size="md" mb="4">
+        <CardContent className="px-4">
+          <HStack>
+            <Heading className="mb-4" size="md">
               Guests
             </Heading>
             <Spacer />
-            <AppLinkButton
-              to={`/event/${eventId}/download`}
-              isExternal
-              rightIcon={<DownloadIcon />}
-            >
+            <AppLinkButton to={`/event/${eventId}/download`} isExternal>
               Download
             </AppLinkButton>
           </HStack>
 
-          <Box rounded="md" border="1px solid" borderColor="gray.200">
+          <div className="rounded border border-solid border-slate-200">
             {guests.map((guest, idx) => {
+              const isFirst = idx === 0
+              const isLast = idx === guests.length - 1
               return (
                 <Stack
                   key={guest.id}
-                  gap={{ base: '0', md: '2' }}
-                  _hover={{ bg: 'gray.100', cursor: 'pointer' }}
-                  py="2"
-                  px="4"
-                  roundedTop={idx === 0 ? 'md' : undefined}
-                  roundedBottom={idx === guests.length - 1 ? 'md' : undefined}
-                  borderTop={idx === 0 ? '0' : '0.5px solid'}
-                  borderBottom={idx === guests.length - 1 ? '0' : '0.5px solid'}
-                  borderColor="gray.200"
+                  className={`border-solid border-slate-200 px-4 py-2 hover:bg-slate-100 md:gap-2
+                  ${isFirst ? 'rounded-t-md' : 'border-t'}
+                  ${isLast ? '' : 'rounded-b-md'}`}
                   onClick={() => {
                     navigate(`${guest.id}`, {
                       preventScrollReset: true,
@@ -141,10 +122,10 @@ export default function EventDetailPage() {
                 </Stack>
               )
             })}
-          </Box>
+          </div>
 
           <Outlet />
-        </CardBody>
+        </CardContent>
       </Card>
     </Stack>
   )

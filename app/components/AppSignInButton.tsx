@@ -1,27 +1,16 @@
-import type { ButtonProps } from '@chakra-ui/react'
-import { Button } from '@chakra-ui/react'
-import { Link, useLocation, useNavigation } from '@remix-run/react'
+import { Link, useLocation } from '@remix-run/react'
 import { BsDiscord } from 'react-icons/bs'
+import { Button, type ButtonProps } from '~/components/ui'
 
 type AppSignInButtonProps = ButtonProps
 export const AppSignInButton = ({ ...rest }: AppSignInButtonProps) => {
-  const navigation = useNavigation()
   const returnTo = new URLSearchParams(useLocation().search).get('returnTo')
 
   return (
-    <Button
-      as={Link}
-      to={`/auth/discord${returnTo ? `?returnTo=${returnTo}` : ''}`}
-      colorScheme="discord"
-      w={['full', 'auto']}
-      leftIcon={<BsDiscord />}
-      isLoading={
-        navigation.state !== 'idle' &&
-        navigation.location.pathname === '/auth/discord'
-      }
-      {...rest}
-    >
-      Discord アカウントで続ける
+    <Button asChild {...rest}>
+      <Link to={`/auth/discord${returnTo ? `?returnTo=${returnTo}` : ''}`}>
+        <BsDiscord className="mr-2" /> Discord アカウントで続ける
+      </Link>
     </Button>
   )
 }

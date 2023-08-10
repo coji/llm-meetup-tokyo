@@ -1,7 +1,7 @@
-import { Container, Stack } from '@chakra-ui/react'
 import { json, type LoaderArgs } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
 import { AppBreadcrumbs, AppFooter, AppHeader } from '~/components'
+import { Stack } from '~/components/ui'
 import { useAppBreadcrumbs } from '~/hooks/use-app-breadcrumbs'
 import { requireUser } from '~/services/auth.server'
 
@@ -20,18 +20,13 @@ export default function AppLayout() {
   const breadcrumbs = useAppBreadcrumbs()
 
   return (
-    <Container
-      maxW="container.lg"
-      display="grid"
-      gridTemplateRows="auto 1fr auto"
-      minH="100dvh"
-    >
+    <div className="grid min-h-screen grid-rows-[auto_1fr_auto] bg-slate-200">
       <AppHeader title="LLM Meetup Tokyo" to="/" />
-      <Stack>
+      <Stack className="container gap-0">
         <AppBreadcrumbs items={breadcrumbs} />
         <Outlet />
       </Stack>
       <AppFooter />
-    </Container>
+    </div>
   )
 }

@@ -1,22 +1,18 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardBody,
-  HStack,
-  Heading,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
 import type { LoaderArgs } from '@remix-run/node'
-import { Outlet, Link as RemixLink, useNavigate } from '@remix-run/react'
-import { GiPlayerNext } from 'react-icons/gi'
-import { MdStart } from 'react-icons/md'
+import { Link, Outlet, useNavigate } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { DemoTrackCard } from '~/components/DemoTrackCard'
 import { EventGuestItem } from '~/components/EventGuestItem'
+import {
+  Button,
+  Card,
+  CardContent,
+  HStack,
+  Heading,
+  Stack,
+} from '~/components/ui'
 import { getEventDemoTrack, listDemoTrackPresenters } from '~/models'
 import type { DemoTrack } from '~/services/database.server'
 
@@ -53,7 +49,6 @@ export default function DemoTrackDetailPage() {
   return (
     <Stack>
       <DemoTrackCard
-        flex="1"
         eventId={eventId}
         trackId={demoTrack.id}
         title={demoTrack.title}
@@ -82,46 +77,30 @@ export default function DemoTrackDetailPage() {
         ]}
       >
         {demoTrack.state !== 'finished' && (
-          <Button
-            as={RemixLink}
-            to={`/event/${eventId}/track/${trackId}/next`}
-            colorScheme="pink"
-            rightIcon={
-              demoTrack.currentPresenter ? <GiPlayerNext /> : <MdStart />
-            }
-            onClick={(e) => e.stopPropagation()}
-          >
-            Set Presenter
+          <Button asChild onClick={(e) => e.stopPropagation()}>
+            <Link to={`/event/${eventId}/track/${trackId}/next`}>
+              Set Presenter
+            </Link>
           </Button>
         )}
       </DemoTrackCard>
 
       <Card>
-        <CardBody px="4">
-          <HStack align="start">
-            <Heading size="md" mb="4">
-              Presenters
-            </Heading>
+        <CardContent>
+          <HStack>
+            <Heading>Presenters</Heading>
           </HStack>
           {presenters.length > 0 ? (
-            <Box rounded="md" border="1px solid" borderColor="gray.200">
+            <div className="rounded border border-solid">
               {presenters.map((presenter, idx) => {
                 return (
                   <Stack
                     key={`${idx}-${presenter.id}`}
-                    gap={{ base: '0', md: '2' }}
-                    _hover={{ bg: 'gray.100', cursor: 'pointer' }}
-                    py="2"
-                    px="4"
-                    roundedTop={idx === 0 ? 'md' : undefined}
-                    roundedBottom={
-                      idx === presenters.length - 1 ? 'md' : undefined
-                    }
-                    borderTop={idx === 0 ? '0' : '0.5px solid'}
-                    borderBottom={
-                      idx === presenters.length - 1 ? '0' : '0.5px solid'
-                    }
-                    borderColor="gray.200"
+                    className={`cursor-pointer gap-0 border-slate-200 px-4 py-2  md:gap-2 ${
+                      idx === 0
+                        ? 'rounded-b-md rounded-t-md'
+                        : 'border-y-[0.5px] border-solid'
+                    }`}
                     onClick={() => {
                       navigate(`presenter/${presenter.id}`, {
                         preventScrollReset: true,
@@ -138,13 +117,11 @@ export default function DemoTrackDetailPage() {
                   </Stack>
                 )
               })}
-            </Box>
+            </div>
           ) : (
-            <Text textAlign="center" color="gray.500">
-              No presenters yet.
-            </Text>
+            <p className="text-center text-slate-500">No presenters yet.</p>
           )}
-        </CardBody>
+        </CardContent>
       </Card>
 
       <Outlet />
