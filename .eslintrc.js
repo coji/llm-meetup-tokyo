@@ -11,7 +11,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  plugins: ['chakra-ui', 'jest-dom', 'testing-library'],
+  plugins: ['jest-dom', 'testing-library'],
   overrides: [
     {
       files: ['**/*.ts'],

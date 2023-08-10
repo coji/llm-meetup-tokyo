@@ -18,15 +18,8 @@
     "validate": "run-p test:run lint typecheck"
   },
   "dependencies": {
-    "@chakra-ui/icons": "2.1.0",
-    "@chakra-ui/react": "2.8.0",
-    "@chakra-ui/styled-system": "2.9.1",
     "@conform-to/react": "0.7.4",
     "@conform-to/zod": "0.7.4",
-    "@emotion/cache": "11.11.0",
-    "@emotion/react": "11.11.1",
-    "@emotion/server": "11.11.0",
-    "@emotion/styled": "11.11.0",
     "@paralleldrive/cuid2": "2.2.2",
     "@prisma/client": "5.1.1",
     "@radix-ui/react-accordion": "1.1.2",
@@ -121,7 +114,6 @@
     "esbuild": "0.19.0",
     "eslint": "8.46.0",
     "eslint-config-prettier": "9.0.0",
-    "eslint-plugin-chakra-ui": "0.9.1",
     "eslint-plugin-testing-library": "5.11.1",
     "jsdom": "22.1.0",
     "msw": "1.2.3",
