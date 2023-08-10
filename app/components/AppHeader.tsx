@@ -8,7 +8,10 @@ interface AppHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 export const AppHeader = ({ title, to, ...rest }: AppHeaderProps) => {
   return (
-    <div className="flex items-center bg-background text-foreground " {...rest}>
+    <div
+      className="container flex items-center bg-background text-foreground "
+      {...rest}
+    >
       <Heading className="py-2 text-center">
         <Link to={to}>{title}</Link>
       </Heading>

@@ -19,7 +19,7 @@ export const EventGuestItem = ({
     <Stack>
       <HStack className="md:w-16rem w-auto gap-4">
         <Avatar>
-          <AvatarImage className="h-6 w-6" src={avatarUrl} loading="lazy" />
+          <AvatarImage src={avatarUrl} loading="lazy" />
         </Avatar>
         <div>
           <p>{name}</p>

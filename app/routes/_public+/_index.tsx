@@ -1,7 +1,7 @@
-import { Stack } from '@chakra-ui/react'
 import type { LoaderArgs } from '@remix-run/node'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { EventCard } from '~/components/EventCard'
+import { Stack } from '~/components/ui'
 import { listLumaEvents } from '~/models'
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -13,7 +13,7 @@ export default function IndexPage() {
   const { events } = useTypedLoaderData<typeof loader>()
 
   return (
-    <Stack spacing="4">
+    <Stack>
       {events.length === 0 ? (
         <div>no events</div>
       ) : (
