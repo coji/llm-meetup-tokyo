@@ -43,7 +43,7 @@ export const EventGuestItem = ({
         </Linkify>
       </div>
 
-      {clusterIndex !== null && (
+      {!!clusterIndex && (
         <HStack className="text-sm">
           <p>クラスタ</p> <Badge variant="outline">{clusterIndex}</Badge>
         </HStack>

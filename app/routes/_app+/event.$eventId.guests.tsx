@@ -8,8 +8,8 @@ import { EventGuestItem } from '~/components/EventGuestItem'
 import {
   Card,
   CardContent,
-  HStack,
   Heading,
+  HStack,
   Spacer,
   Stack,
 } from '~/components/ui'
