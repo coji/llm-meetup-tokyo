@@ -1,29 +1,26 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spacer,
-  Stack,
-  Switch,
-  Text,
-} from '@chakra-ui/react'
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
-import { Form, useNavigate, useNavigation, useSubmit } from '@remix-run/react'
+import { Form, useNavigate, useSubmit } from '@remix-run/react'
 import { useState } from 'react'
 import { redirect, typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  HStack,
+  Input,
+  Label,
+  Spacer,
+  Stack,
+  Switch,
+} from '~/components/ui'
 import {
   getEventDemoTrack,
   searchEventGuests,
@@ -77,24 +74,21 @@ export default function TrackNextPresenterPage() {
     (typeof guests)[0] | undefined
   >(demoTrack.currentPresenter ?? undefined)
   const submit = useSubmit()
-  const navigation = useNavigation()
   const navigate = useNavigate()
   const handleOnClose = () => {
     navigate('..')
   }
   return (
-    <Modal isOpen={true} onClose={handleOnClose}>
-      <ModalOverlay />
-      <ModalContent maxH="80dvh">
-        <ModalHeader>Set Presenter</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody overflow="auto">
+    <Dialog open onOpenChange={handleOnClose}>
+      <DialogContent className="max-h-[80dvh]">
+        <DialogHeader>
+          <DialogTitle>Set Presenter</DialogTitle>
+        </DialogHeader>
+        <Stack>
           <Form id="next-presenter-form" method="POST">
             <Stack>
-              <HStack align="center" h="64px">
-                <Text fontSize="sm" color="gray.500" fontWeight="bold">
-                  Selected
-                </Text>
+              <HStack className="h-[64px]">
+                <p className="text-sm font-bold text-slate-500">Selected</p>
                 {selectedGuest ? (
                   <>
                     <input
@@ -102,25 +96,32 @@ export default function TrackNextPresenterPage() {
                       name="presenterId"
                       defaultValue={selectedGuest?.id}
                     />
-                    <Avatar size="md" src={selectedGuest.lumaUser.avatarUrl} />
-                    <Box>
-                      <Text>{selectedGuest.lumaUser.name ?? 'Anonymous'}</Text>
-                      <Text color="gray.500" fontSize="xs">
+                    <Avatar>
+                      <AvatarImage src={selectedGuest.lumaUser.avatarUrl} />
+                      <AvatarFallback>
+                        {selectedGuest.lumaUser.name}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p>{selectedGuest.lumaUser.name ?? 'Anonymous'}</p>
+                      <p className="text-xs text-slate-500">
                         {selectedGuest.answers.sns}
-                      </Text>
-                    </Box>
+                      </p>
+                    </div>
                   </>
                 ) : (
-                  <Box fontSize="sm" color="gray.500">
-                    未選択
-                  </Box>
+                  <p className="text-sm text-slate-500">未選択</p>
                 )}
               </HStack>
 
-              <FormControl display="flex" alignItems="center">
-                <FormLabel mb="0">Discordに通知</FormLabel>
-                <Switch name="isPushDiscord" defaultChecked value="true" />
-              </FormControl>
+              <fieldset className="flex items-center">
+                <Label>Discordに通知</Label>
+                <Switch
+                  name="isPushDiscord"
+                  defaultChecked
+                  defaultValue="true"
+                />
+              </fieldset>
             </Stack>
           </Form>
 
@@ -137,57 +138,55 @@ export default function TrackNextPresenterPage() {
             />
           </Form>
 
-          <Box fontSize="sm" color="gray.600" fontWeight="bold">
+          <div className="text-sm font-bold text-slate-500">
             {search && <span>"{search}"の検索結果:</span>} {guests.length}人
             アルファベット順
-          </Box>
+          </div>
 
-          <Stack flex="1" spacing="1">
+          <Stack>
             {guests.map((guest) => {
+              const isSelected = selectedGuest?.id === guest.id
               return (
                 <HStack
                   key={guest.id}
-                  py="1"
-                  px="2"
-                  rounded="md"
-                  bg={selectedGuest?.id === guest.id ? 'blue.200' : undefined}
-                  _hover={{ bg: 'gray.200', cursor: 'pointer' }}
+                  className={`cursor-pointer rounded px-2 py-1 hover:bg-slate-200 ${
+                    isSelected ? 'text-blue-200' : ''
+                  }`}
                   onClick={() => {
-                    if (selectedGuest?.id === guest.id) {
+                    if (isSelected) {
                       setSelectedGuest(undefined)
                     } else {
                       setSelectedGuest(guest)
                     }
                   }}
                 >
-                  <Avatar size="sm" src={guest.lumaUser.avatarUrl}></Avatar>
-                  <Box>
-                    <Text>{guest.lumaUser.name ?? 'Anonymous'}</Text>
-                    <Text color="gray.500" fontSize="xs">
+                  <Avatar>
+                    <AvatarImage src={guest.lumaUser.avatarUrl} />
+                    <AvatarFallback>{guest.lumaUser.name}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p>{guest.lumaUser.name ?? 'Anonymous'}</p>
+                    <p className="text-xs text-slate-500">
                       {guest.answers.sns}
-                    </Text>
-                  </Box>
+                    </p>
+                  </div>
                 </HStack>
               )
             })}
           </Stack>
-        </ModalBody>
+        </Stack>
 
-        <ModalFooter gap="2">
-          <Button
-            form="next-presenter-form"
-            type="submit"
-            isLoading={navigation.state !== 'idle'}
-          >
+        <DialogFooter className="gap-2">
+          <Button form="next-presenter-form" type="submit">
             Submit
           </Button>
 
           <Spacer />
-          <Button variant="ghost" onClick={handleOnClose}>
+          <Button variant="ghost" type="button" onClick={handleOnClose}>
             Cancel
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
