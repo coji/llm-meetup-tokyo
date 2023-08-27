@@ -108,7 +108,7 @@ export const EventCard = ({
                   >
                     <p>
                       {event.geoAddress}{' '}
-                      <ExternalLinkIcon className="h-3 w-3" />
+                      <ExternalLinkIcon className="inline h-3 w-3" />
                     </p>
                     <p className="text-xs">{event.geoCityState}</p>
                   </a>

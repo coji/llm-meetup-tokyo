@@ -8,7 +8,8 @@ import { EventGuestItem } from '~/components/EventGuestItem'
 import {
   Card,
   CardContent,
-  Heading,
+  CardHeader,
+  CardTitle,
   HStack,
   Spacer,
   Stack,
@@ -35,67 +36,63 @@ export default function EventDetailPage() {
   return (
     <Stack>
       <Card>
+        <CardHeader>
+          <HStack>
+            <CardTitle>Demo Tracks</CardTitle>
+            <Spacer />
+            <AppLinkButton to={`/event/${eventId}/guests/track/add`}>
+              Add
+            </AppLinkButton>
+          </HStack>
+        </CardHeader>
         <CardContent>
-          <Stack>
-            <HStack>
-              <Heading className="mb-4" size="md">
-                Demo Tracks
-              </Heading>
-              <Spacer />
-              <AppLinkButton to={`/event/${eventId}/guests/track/add`}>
-                Add
-              </AppLinkButton>
-            </HStack>
-
-            {demoTracks.length > 0 ? (
-              <div className="flex flex-wrap gap-4">
-                {demoTracks.map((demoTrack) => (
-                  <DemoTrackCard
-                    key={demoTrack.id}
-                    eventId={eventId}
-                    trackId={demoTrack.id}
-                    title={demoTrack.title}
-                    state={demoTrack.state}
-                    presenter={
-                      demoTrack.currentPresenter
-                        ? {
-                            name:
-                              demoTrack.currentPresenter.lumaUser.name ??
-                              'Anonymous',
-                            avatarUrl:
-                              demoTrack.currentPresenter.lumaUser.avatarUrl,
-                            demo: demoTrack.currentPresenter.answers.demo,
-                          }
-                        : undefined
-                    }
-                    host={{
-                      name: demoTrack.host.lumaUser.name ?? 'Anonymous',
-                      avatarUrl: demoTrack.host.lumaUser.avatarUrl,
-                    }}
-                    zoomUrl={demoTrack.zoomUrl ?? undefined}
-                    to={`/event/${eventId}/track/${demoTrack.id}`}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-slate-500">No demo tracks yet.</p>
-            )}
-          </Stack>
+          {demoTracks.length > 0 ? (
+            <div className="flex flex-wrap gap-4">
+              {demoTracks.map((demoTrack) => (
+                <DemoTrackCard
+                  key={demoTrack.id}
+                  eventId={eventId}
+                  trackId={demoTrack.id}
+                  title={demoTrack.title}
+                  state={demoTrack.state}
+                  presenter={
+                    demoTrack.currentPresenter
+                      ? {
+                          name:
+                            demoTrack.currentPresenter.lumaUser.name ??
+                            'Anonymous',
+                          avatarUrl:
+                            demoTrack.currentPresenter.lumaUser.avatarUrl,
+                          demo: demoTrack.currentPresenter.answers.demo,
+                        }
+                      : undefined
+                  }
+                  host={{
+                    name: demoTrack.host.lumaUser.name ?? 'Anonymous',
+                    avatarUrl: demoTrack.host.lumaUser.avatarUrl,
+                  }}
+                  zoomUrl={demoTrack.zoomUrl ?? undefined}
+                  to={`/event/${eventId}/track/${demoTrack.id}`}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-slate-500">No demo tracks yet.</p>
+          )}
         </CardContent>
       </Card>
 
       <Card>
-        <CardContent className="px-4">
+        <CardHeader>
           <HStack>
-            <Heading className="mb-4" size="md">
-              Guests
-            </Heading>
+            <CardTitle>Guests</CardTitle>
             <Spacer />
             <AppLinkButton to={`/event/${eventId}/download`} isExternal>
               Download
             </AppLinkButton>
           </HStack>
-
+        </CardHeader>
+        <CardContent>
           <div className="rounded border border-solid border-slate-200">
             {guests.map((guest, idx) => {
               const isFirst = idx === 0

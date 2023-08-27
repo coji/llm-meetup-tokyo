@@ -11,6 +11,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardTitle,
   Center,
   DropdownMenu,
   DropdownMenuContent,
@@ -80,9 +81,9 @@ export const DemoTrackCard = ({
       }}
       {...rest}
     >
-      <CardHeader className="pb-0">
+      <CardHeader>
         <HStack>
-          <p className="font-bold">{title}</p>
+          <CardTitle>{title}</CardTitle>
           <Spacer />
 
           {menu && (
@@ -112,7 +113,7 @@ export const DemoTrackCard = ({
         </HStack>
       </CardHeader>
 
-      <CardContent className="pt-2">
+      <CardContent>
         {presenter ? (
           <Stack>
             <HStack>
