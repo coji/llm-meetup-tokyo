@@ -3,7 +3,14 @@ import { Form, useNavigation } from '@remix-run/react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { z } from 'zod'
 import { zx } from 'zodix'
-import { Button, Card, CardContent, Stack } from '~/components/ui'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Stack,
+} from '~/components/ui'
 import { embedEventGuests } from '~/jobs/embed-event-guests.server'
 import { getEventById } from '~/models'
 import { emitter } from '~/services/emitter.server'
@@ -36,6 +43,9 @@ export default function EventSyncPage() {
   return (
     <Stack>
       <Card>
+        <CardHeader>
+          <CardTitle>Embedding</CardTitle>
+        </CardHeader>
         <CardContent>
           <Form method="POST">
             <input type="hidden" name="url" value={event.url}></input>

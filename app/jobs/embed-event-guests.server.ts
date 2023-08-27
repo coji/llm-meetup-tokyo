@@ -1,6 +1,6 @@
 import { listEventGuests } from '~/models'
+import { fetchEmbedding } from '~/services/api.server'
 import { prisma } from '~/services/database.server'
-import { fetchEmbedding } from '~/services/embed'
 
 export const embedEventGuests = async (eventId: string) => {
   const guests = await listEventGuests(eventId)
